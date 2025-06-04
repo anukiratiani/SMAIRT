@@ -33,6 +33,13 @@
                     <textarea id="commandInput" placeholder="Enter a mathematical query (e.g., 'biggest two digited number', 'average of 4 and 6', '∫x^2 dx')" autofocus></textarea>
                     <button class="submit-btn" onclick="submitQuery()">Submit</button>
                 </div>
+                <div class="stats-toggle" onclick="toggleStats()">▼ Statistical Tools</div>
+                <div class="stats-buttons" id="statsButtons" style="display: none;">
+                    <button class="stat-btn" onclick="calculateStat('average')">Average</button>
+                    <button class="stat-btn" onclick="calculateStat('mode')">Mode</button>
+                    <button class="stat-btn" onclick="calculateStat('median')">Median</button>
+                    <button class="stat-btn" onclick="calculateStat('range')">Range</button>
+                </div>
             </div>
         </div>
         <div class="tab-content" id="history" style="display: none;">
@@ -45,6 +52,7 @@
                 <h3>How to Use</h3>
                 <ul>
                     <li>Enter queries in the <strong>Problem Input</strong> tab (e.g., 'average of 4 and 6'), use symbols, then press <strong>Enter</strong> or click <strong>Submit</strong>.</li>
+                    <li>Click the ▼ arrow to show/hide statistical buttons (Average, Mode, Median, Range).</li>
                     <li>Click symbols (∫, ^2, √, π, log, ln, lg, dx) to insert them.</li>
                     <li>View past queries in the <strong>History</strong> tab.</li>
                     <li>Use Shift+Enter for new lines.</li>
