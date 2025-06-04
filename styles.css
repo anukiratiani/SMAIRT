@@ -1,0 +1,142 @@
+body {
+    background-color: #1c1c1c;
+    color: #d4af37;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.container {
+    width: 90%;
+    max-width: 900px;
+    background-color: #000;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    overflow: hidden;
+}
+.header {
+    background-color: #d4af37;
+    color: #000;
+    padding: 15px;
+    font-size: 1.5em;
+    text-align: center;
+    font-weight: bold;
+}
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #d4af37;
+}
+.tab {
+    flex: 1;
+    padding: 10px;
+    background-color: #333;
+    color: #d4af37;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+.tab:hover {
+    background-color: #4a4a4a;
+}
+.tab.active {
+    background-color: #d4af37;
+    color: #000;
+}
+.tab-content {
+    padding: 20px;
+}
+.symbol-table {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.symbol-btn {
+    background-color: #333;
+    color: #d4af37;
+    border: 1px solid #d4af37;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+.symbol-btn:hover {
+    background-color: #d4af37;
+    color: #000;
+}
+.terminal {
+    background-color: #000;
+    border: 1px solid #d4af37;
+    border-radius: 5px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+.output, .history {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+    color: #d4af37;
+}
+.input-line {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #d4af37;
+}
+.prompt {
+    margin-right: 10px;
+    color: #d4af37;
+}
+#commandInput {
+    background: none;
+    border: none;
+    color: #d4af37;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    flex-grow: 1;
+    outline: none;
+    resize: none;
+    height: 60px;
+}
+#commandInput::placeholder {
+    color: #b8972e;
+}
+.submit-btn {
+    background-color: #d4af37;
+    color: #000;
+    border: none;
+    padding: 8px 15px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+.submit-btn:hover {
+    background-color: #e6c84f;
+}
+.help-content {
+    color: #d4af37;
+    padding: 20px;
+}
+.help-content h2, .help-content h3 {
+    color: #e6c84f;
+}
+.help-content ul {
+    list-style-type: square;
+    padding-left: 20px;
+}
+@media (max-width: 600px) {
+    .container { width: 95%; }
+    .tab, .symbol-btn { font-size: 0.9em; }
+    .submit-btn { padding: 6px 10px; }
+}
