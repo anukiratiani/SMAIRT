@@ -1,5 +1,4 @@
 let history = [];
-let statsVisible = false;
 
 const spellCheckDict = {
     'appel': 'apple', 'appels': 'apples', 'giv': 'give', 'lef': 'left', 'tota': 'total',
@@ -7,8 +6,7 @@ const spellCheckDict = {
     'bigest': 'biggest', 'maxium': 'maximum', 'pluss': 'plus', 'tree': 'three', 'fiv': 'five',
     'intergrate': 'integrate', 'sqr': 'sqrt', 'perimiter': 'perimeter', 'bace': 'base',
     'two digited': 'two-digit', 'digited': 'digit', 'avrg': 'average', 'meen': 'mean',
-    'mediam': 'median', 'mod': 'mode', 'rang': 'range', 'avrge': 'average', 'medn': 'median',
-    'modde': 'mode', 'ranj': 'range'
+    'mediam': 'median', 'mod': 'mode'
 };
 
 function correctSpelling(text) {
@@ -17,65 +15,6 @@ function correctSpelling(text) {
         corrected = corrected.replace(new RegExp(`\\b${wrong}\\b`, 'gi'), right); // Case-insensitive
     }
     return corrected.replace(/\s+digited/g, '-digit');
-}
-
-function levenshteinDistance(a, b) {
-    const matrix = Array(b.length + 1).fill().map(() => Array(a.length + 1).fill(0));
-    for (let i = 0; i <= a.length; i++) matrix[0][i] = i;
-    for (let j = 0; j <= b.length; j++) matrix[j][0] = j;
-    for (let j = 1; j <= b.length; j++) {
-        for (let i = 1; i <= a.length; i++) {
-            const indicator = a[i - 1] === b[j - 1] ? 0 : 1;
-            matrix[j][i] = Math.min(
-                matrix[j][i - 1] + 1, // Deletion
-                matrix[j - 1][i] + 1, // Insertion
-                matrix[j - 1][i - 1] + indicator // Substitution
-            );
-        }
-    }
-    return matrix[b.length][a.length];
-}
-
-function findClosestMatch(word, dictionary) {
-    const threshold = 2; // Allow up to 2 edits
-    let bestMatch = word;
-    let minDistance = threshold + 1;
-    for (const key of Object.keys(dictionary)) {
-        const distance = levenshteinDistance(word, key);
-        if (distance <= threshold && distance < minDistance) {
-            minDistance = distance;
-            bestMatch = dictionary[key];
-        }
-    }
-    return bestMatch;
-}
-
-function extractNumbers(text) {
-    return (text.match(/\d+(\.\d+)?/g) || []).map(Number);
-}
-
-function calculateAverage(nums) {
-    const sum = nums.reduce((a, b) => a + b, 0);
-    return (sum / nums.length).toFixed(2);
-}
-
-function calculateMedian(nums) {
-    const sorted = nums.slice().sort((a, b) => a - b);
-    const mid = Math.floor(sorted.length / 2);
-    return sorted.length % 2 === 0 ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2) : sorted[mid].toFixed(2);
-}
-
-function calculateMode(nums) {
-    const freq = {};
-    nums.forEach(num => freq[num] = (freq[num] || 0) + 1);
-    const maxFreq = Math.max(...Object.values(freq));
-    const modes = Object.keys(freq).filter(key => freq[key] === maxFreq).map(Number);
-    return modes.length === 1 ? modes[0].toString() : modes.join(', ');
-}
-
-function calculateRange(nums) {
-    const sorted = nums.slice().sort((a, b) => a - b);
-    return (sorted[sorted.length - 1] - sorted[0]).toFixed(2);
 }
 
 function insertSymbol(symbol) {
@@ -113,14 +52,8 @@ function submitQuery() {
     const input = document.getElementById('commandInput');
     const outputDiv = document.getElementById('output');
     if (input && outputDiv) {
-        let query = input.value.trim();
+        const query = input.value.trim();
         if (query) {
-            // Enhanced spelling correction with Levenshtein distance
-            const words = query.split(/\s+/);
-            query = words.map(word => {
-                const corrected = correctSpelling(word);
-                return corrected === word ? findClosestMatch(word, spellCheckDict) : corrected;
-            }).join(' ');
             outputDiv.innerHTML += `<p>> ${query}</p>`;
             const response = solveTextBasedMathQuery(query);
             outputDiv.innerHTML += `<p class="response">${response}</p>`;
@@ -133,37 +66,6 @@ function submitQuery() {
     }
 }
 
-function toggleStats() {
-    const statsButtons = document.getElementById('statsButtons');
-    const toggle = document.querySelector('.stats-toggle');
-    statsVisible = !statsVisible;
-    statsButtons.style.display = statsVisible ? 'flex' : 'none';
-    toggle.textContent = `▼ ${statsVisible ? 'Hide' : 'Statistical Tools'}`;
-}
-
-function calculateStat(statType) {
-    const input = document.getElementById('commandInput').value.trim();
-    const numbers = extractNumbers(input);
-    const outputDiv = document.getElementById('output');
-    if (numbers.length > 0) {
-        let result;
-        switch (statType) {
-            case 'average': result = `The average is ${calculateAverage(numbers)}.`; break;
-            case 'mode': result = `The mode is ${calculateMode(numbers)}.`; break;
-            case 'median': result = `The median is ${calculateMedian(numbers)}.`; break;
-            case 'range': result = `The range is ${calculateRange(numbers)}.`; break;
-        }
-        if (outputDiv) {
-            outputDiv.innerHTML += `<p>> ${statType} of ${input}</p>`;
-            outputDiv.innerHTML += `<p class="response">${result}</p>`;
-            history.push({ query: `${statType} of ${input}`, response: result });
-            outputDiv.scrollTop = outputDiv.scrollHeight;
-        }
-    } else {
-        if (outputDiv) outputDiv.innerHTML += `<p class="response">Error: No numbers found in "${input}".</p>`;
-    }
-}
-
 document.getElementById('commandInput')?.addEventListener('keydown', function(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
@@ -171,9 +73,27 @@ document.getElementById('commandInput')?.addEventListener('keydown', function(ev
     }
 });
 
-function binomial(n, k) {
-    if (k === 0 || k === n) return 1;
-    return binomial(n - 1, k - 1) + binomial(n - 1, k);
+function extractNumbers(text) {
+    return (text.match(/\d+(\.\d+)?/g) || []).map(Number);
+}
+
+function calculateAverage(nums) {
+    const sum = nums.reduce((a, b) => a + b, 0);
+    return (sum / nums.length).toFixed(2);
+}
+
+function calculateMedian(nums) {
+    const sorted = nums.slice().sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 0 ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2) : sorted[mid].toFixed(2);
+}
+
+function calculateMode(nums) {
+    const freq = {};
+    nums.forEach(num => freq[num] = (freq[num] || 0) + 1);
+    const maxFreq = Math.max(...Object.values(freq));
+    const modes = Object.keys(freq).filter(key => freq[key] === maxFreq).map(Number);
+    return modes.length === 1 ? modes[0].toString() : modes.join(', ');
 }
 
 function solveTextBasedMathQuery(query) {
@@ -192,7 +112,7 @@ function solveTextBasedMathQuery(query) {
         squareRoot: ['sqrt', 'square root', '√'],
         base: ['base', 'convert'],
         perimeter: ['perimeter', 'circumference'],
-        statistics: ['average', 'mean', 'median', 'mode', 'range']
+        statistics: ['average', 'mean', 'median', 'mode']
     };
 
     const getOperation = () => {
@@ -381,17 +301,20 @@ function solveTextBasedMathQuery(query) {
                 response = `The median is ${calculateMedian(numbers)}.`;
             } else if (lowerQuery.includes('mode')) {
                 response = `The mode is ${calculateMode(numbers)}.`;
-            } else if (lowerQuery.includes('range')) {
-                response = `The range is ${calculateRange(numbers)}.`;
             }
         } else {
             response = 'Error: No numbers provided for statistical calculation.';
         }
     } else {
-        response = `Sorry, I don’t recognize that command. Try "biggest two-digit number", "avrge of 4 and 6", "∫x^2 dx", or use the statistical buttons.`;
+        response = `Sorry, I don’t recognize that command. Try "biggest two-digit number", "average of 4 and 6", "∫x^2 dx", or "perimeter of a rectangle with sides 5 and 3".`;
     }
 
     return response;
+}
+
+function binomial(n, k) {
+    if (k === 0 || k === n) return 1;
+    return binomial(n - 1, k - 1) + binomial(n - 1, k);
 }
 
 function updateHistory() {
@@ -405,4 +328,4 @@ function updateHistory() {
 
 // Initialize
 openTab('problem-input');
-console.log('SMAIRT loaded with advanced stats and smart recognition');
+console.log('SMAIRT loaded with advanced features');
