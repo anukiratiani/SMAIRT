@@ -135,37 +135,8 @@ body {
     list-style-type: square;
     padding-left: 20px;
 }
-.stats-toggle {
-    text-align: center;
-    padding: 5px;
-    cursor: pointer;
-    color: #d4af37;
-    transition: color 0.3s;
-}
-.stats-toggle:hover {
-    color: #e6c84f;
-}
-.stats-buttons {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-}
-.stat-btn {
-    background-color: #333;
-    color: #d4af37;
-    border: 1px solid #d4af37;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-family: 'Courier New', monospace;
-    border-radius: 3px;
-    transition: background-color 0.3s;
-}
-.stat-btn:hover {
-    background-color: #d4af37;
-    color: #000;
-}
 @media (max-width: 600px) {
     .container { width: 95%; }
-    .tab, .symbol-btn, .stat-btn { font-size: 0.9em; }
+    .tab, .symbol-btn { font-size: 0.9em; }
     .submit-btn { padding: 6px 10px; }
 }
