@@ -236,7 +236,8 @@ function solveTextBasedMathQuery(query) {
                 const a = hasLimits ? parseFloat(integralMatch[4]) : null;
                 const b = hasLimits ? parseFloat(integralMatch[6]) : null;
                 let result;
-                if (let polyMatch = expr.match(/x\^(\d+)/i)) {
+                let polyMatch = expr.match(/x\^(\d+)/i);
+                if (polyMatch) {
                     const power = parseInt(polyMatch[1]);
                     const newPower = power + 1;
                     const coefficient = 1 / newPower;
@@ -344,4 +345,58 @@ function solveTextBasedMathQuery(query) {
             const rectMatch = query.match(/rectangle\s*with\s*sides\s*(\d+(\.\d+)?)\s*and\s*(\d+(\.\d+)?)/i);
             if (rectMatch) {
                 const side1 = parseFloat(rectMatch[1]), side2 = parseFloat(rectMatch[3]);
-                const
+                const perimeter = 2 * (side1 + side2);
+                response = `Perimeter of rectangle: 2(${side1} + ${side2}) = ${perimeter.toFixed(2)}`;
+            } else {
+                response = 'Error: Specify two sides for rectangle.';
+            }
+        } else if (lowerQuery.includes('circle') || lowerQuery.includes('circumference')) {
+            const circleMatch = query.match(/circle\s*with\s*radius\s*(\d+(\.\d+)?)/i);
+            if (circleMatch) {
+                const radius = parseFloat(circleMatch[1]);
+                const perimeter = 2 * Math.PI * radius;
+                response = `Circumference of circle: 2π × ${radius} ≈ ${perimeter.toFixed(2)}`;
+            } else {
+                response = 'Error: Specify radius for circle.';
+            }
+        } else {
+            response = 'Error: Could not parse perimeter query. Try "perimeter of rectangle with sides 5 and 3".';
+        }
+    } else if (operation === 'olympiad') {
+        if (lowerQuery.includes('perfect square')) {
+            const olympiadMatch = query.match(/n\^2\s*\+\s*(\d+)n\s*\+\s*(\d+)\s*is\s*a\s*perfect\s*square/i);
+            if (olympiadMatch) {
+                const b = parseInt(olympiadMatch[1]), c = parseInt(olympiadMatch[2]);
+                let solutions = [];
+                for (let n = -100; n <= 100; n++) {
+                    const value = n * n + b * n + c;
+                    const sqrt = Math.sqrt(value);
+                    if (Number.isInteger(sqrt)) {
+                        solutions.push(n);
+                    }
+                }
+                response = solutions.length ?
+                    `Let’s find integers n such that n^2 + ${b}n + ${c} is a perfect square. Solutions: n = ${solutions.join(', ')}` :
+                    `No integer solutions found for n^2 + ${b}n + ${c} being a perfect square in range [-100, 100].`;
+            } else {
+                response = 'Error: Could not parse Olympiad query. Try "find integers n such that n^2 + 3n + 5 is a perfect square".';
+            }
+        } else {
+            response = 'Error: Unsupported Olympiad problem. Please specify a perfect square condition.';
+        }
+    } else {
+        response = `Sorry, I don’t recognize that command. Try something like "expand (a + b)^2", "∫x^2 dx", or "perimeter of a rectangle with sides 5 and 3".`;
+    }
+
+    return response;
+}
+
+function updateHistory() {
+    const historyDiv = document.getElementById('history-output');
+    historyDiv.innerHTML = history.length ? 
+        history.map((entry, index) => `<p><strong>Query ${index + 1}:</strong> ${entry.query}<br><strong>Response:</strong> ${entry.response}</p>`).join('') :
+        '<p>No history available.</p>';
+}
+
+// Initialize
+openTab('problem-input');
