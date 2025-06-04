@@ -5,7 +5,8 @@ const spellCheckDict = {
     'totl': 'total', 'solv': 'solve', 'numer': 'number', 'equels': 'equals', 'prise': 'price',
     'bigest': 'biggest', 'maxium': 'maximum', 'pluss': 'plus', 'tree': 'three', 'fiv': 'five',
     'intergrate': 'integrate', 'sqr': 'sqrt', 'perimiter': 'perimeter', 'bace': 'base',
-    '2digited': 'two-digit', 'digited': 'digit', 'two digited': 'two-digit'
+    'two digited': 'two-digit', 'digited': 'digit', 'avrg': 'average', 'meen': 'mean',
+    'mediam': 'median', 'mod': 'mode'
 };
 
 function correctSpelling(text) {
@@ -13,7 +14,7 @@ function correctSpelling(text) {
     for (const [wrong, right] of Object.entries(spellCheckDict)) {
         corrected = corrected.replace(new RegExp(`\\b${wrong}\\b`, 'g'), right);
     }
-    return corrected.replace(/\s+digited\b/g, '-digit');
+    return corrected.replace(/\s+digited/g, '-digit'); // Handle spaced variations
 }
 
 function insertSymbol(symbol) {
@@ -72,29 +73,52 @@ document.getElementById('commandInput')?.addEventListener('keydown', function(ev
     }
 });
 
+function extractNumbers(text) {
+    return (text.match(/\d+(\.\d+)?/g) || []).map(Number);
+}
+
+function calculateAverage(nums) {
+    const sum = nums.reduce((a, b) => a + b, 0);
+    return (sum / nums.length).toFixed(2);
+}
+
+function calculateMedian(nums) {
+    const sorted = nums.slice().sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 === 0 ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2) : sorted[mid].toFixed(2);
+}
+
+function calculateMode(nums) {
+    const freq = {};
+    nums.forEach(num => freq[num] = (freq[num] || 0) + 1);
+    const maxFreq = Math.max(...Object.values(freq));
+    const modes = Object.keys(freq).filter(key => freq[key] === maxFreq).map(Number);
+    return modes.length === 1 ? modes[0].toString() : modes.join(', ');
+}
+
 function solveTextBasedMathQuery(query) {
     const correctedQuery = correctSpelling(query);
     const lowerQuery = correctedQuery.toLowerCase();
-    const numbers = query.match(/\d+(\.\d+)?/g)?.map(Number) || [];
+    const numbers = extractNumbers(query);
     let response = '';
 
     const operations = {
         arithmetic: ['plus', 'minus', 'times', 'divided by', 'add', 'subtract', 'multiply', 'divide', 'what is', 'equals', '[+\\-*/]'],
         descriptive: ['biggest', 'largest', 'smallest', 'two-digit', 'three-digit'],
         wordProblem: ['left', 'remain', 'give', 'gives', 'cost', 'each', 'per', 'split'],
-        algebra: ['expand', 'factor', 'solve', 'equals', 'equation', 'quadratic', 'factorize'],
+        algebra: ['expand', 'factor', 'solve', 'equals', 'equation', 'quadratic'],
         calculus: ['integrate', 'differentiate', 'derivative', '∫'],
         logarithm: ['log', 'ln', 'lg'],
         squareRoot: ['sqrt', 'square root', '√'],
         base: ['base', 'convert'],
         perimeter: ['perimeter', 'circumference'],
-        numberTheory: ['prime', 'factorize', 'divisors', 'gcd', 'lcm']
+        statistics: ['average', 'mean', 'median', 'mode']
     };
 
     const getOperation = () => {
-        for (const [op, keywords] of Object.entries(operations)) {
+        for (const [opType, keywords] of Object.entries(operations)) {
             if (keywords.some(keyword => keyword.startsWith('[') ? query.match(new RegExp(keyword)) : lowerQuery.includes(keyword))) {
-                return op;
+                return opType;
             }
         }
         return null;
@@ -120,21 +144,21 @@ function solveTextBasedMathQuery(query) {
             response = 'Error: Invalid arithmetic. Try "3 + 5".';
         }
     } else if (operation === 'descriptive') {
-        if (lowerQuery.includes('biggest') || lowerQuery.includes('largest')) {
+        if ((lowerQuery.includes('biggest') || lowerQuery.includes('largest')) && numbers.length === 0) {
             if (lowerQuery.includes('two-digit')) {
                 response = 'The largest two-digit number is 99.';
             } else if (lowerQuery.includes('three-digit')) {
                 response = 'The largest three-digit number is 999.';
             } else {
-                response = 'Specify "two-digit" or "three-digit" for the largest.';
+                response = 'Please specify "two-digit" or "three-digit".';
             }
-        } else if (lowerQuery.includes('smallest')) {
+        } else if (lowerQuery.includes('smallest') && numbers.length === 0) {
             if (lowerQuery.includes('two-digit')) {
                 response = 'The smallest two-digit number is 10.';
             } else if (lowerQuery.includes('three-digit')) {
                 response = 'The smallest three-digit number is 100.';
             } else {
-                response = 'Specify "two-digit" or "three-digit" for the smallest.';
+                response = 'Please specify "two-digit" or "three-digit".';
             }
         } else {
             response = 'Error: Unrecognized descriptive query. Try "biggest two-digit number".';
@@ -186,15 +210,6 @@ function solveTextBasedMathQuery(query) {
             } else {
                 response = 'Error: Invalid expansion. Try "expand (a + b)^3".';
             }
-        } else if (lowerQuery.includes('factor') || lowerQuery.includes('factorize')) {
-            const numMatch = numbers[0];
-            if (numMatch) {
-                const n = Math.floor(numMatch);
-                const factors = factorize(n);
-                response = `Factorization of ${n}: ${factors.map(f => f[1] > 1 ? `${f[0]}^${f[1]}` : f[0]).join(' × ')}`;
-            } else {
-                response = 'Error: Provide a number to factorize. Try "factorize 84".';
-            }
         } else {
             response = 'Error: Unsupported algebra query.';
         }
@@ -214,7 +229,7 @@ function solveTextBasedMathQuery(query) {
                 response = `∫${expr} dx = ${newCoeff}x^${newPower} + C`;
                 if (hasLimits && a !== null && b !== null) {
                     const F = x => newCoeff * Math.pow(x, newPower);
-                    response += ` = ${F(b) - F(a).toFixed(2)} from ${a} to ${b}`;
+                    response += ` = ${(F(b) - F(a)).toFixed(2)} from ${a} to ${b}`;
                 }
             } else {
                 response = 'Error: Invalid integral. Try "∫x^2 dx".';
@@ -278,30 +293,20 @@ function solveTextBasedMathQuery(query) {
         } else {
             response = 'Error: Invalid perimeter query.';
         }
-    } else if (operation === 'numberTheory') {
-        if (lowerQuery.includes('prime')) {
-            const num = numbers[0];
-            if (num) response = `${num} is ${isPrime(num) ? '' : 'not '}a prime number`;
-            else response = 'Error: Provide a number. Try "is 17 prime".';
-        } else if (lowerQuery.includes('factorize')) {
-            const num = numbers[0];
-            if (num) {
-                const factors = factorize(num);
-                response = `Factorization of ${num}: ${factors.map(f => f[1] > 1 ? `${f[0]}^${f[1]}` : f[0]).join(' × ')}`;
-            } else {
-                response = 'Error: Provide a number. Try "factorize 84".';
+    } else if (operation === 'statistics') {
+        if (numbers.length > 0) {
+            if (lowerQuery.includes('average') || lowerQuery.includes('mean')) {
+                response = `The average is ${calculateAverage(numbers)}.`;
+            } else if (lowerQuery.includes('median')) {
+                response = `The median is ${calculateMedian(numbers)}.`;
+            } else if (lowerQuery.includes('mode')) {
+                response = `The mode is ${calculateMode(numbers)}.`;
             }
-        } else if (lowerQuery.includes('gcd')) {
-            if (numbers.length >= 2) response = `GCD: ${gcd(...numbers)}`;
-            else response = 'Error: Need two numbers. Try "gcd of 48 and 18".';
-        } else if (lowerQuery.includes('lcm')) {
-            if (numbers.length >= 2) response = `LCM: ${lcm(...numbers)}`;
-            else response = 'Error: Need two numbers. Try "lcm of 12 and 18".';
         } else {
-            response = 'Error: Unsupported number theory query.';
+            response = 'Error: No numbers provided for statistical calculation.';
         }
     } else {
-        response = 'Unknown command. Try "biggest two-digit number" or "factorize 84".';
+        response = `Sorry, I don’t recognize that command. Try something like "biggest two-digit number", "average of 4 and 6", "∫x^2 dx", or "perimeter of a rectangle with sides 5 and 3".`;
     }
 
     return response;
@@ -310,36 +315,6 @@ function solveTextBasedMathQuery(query) {
 function binomial(n, k) {
     if (k === 0 || k === n) return 1;
     return binomial(n - 1, k - 1) + binomial(n - 1, k);
-}
-
-function isPrime(n) {
-    if (n < 2) return false;
-    for (let i = 2; i <= Math.sqrt(n); i++) if (n % i === 0) return false;
-    return true;
-}
-
-function factorize(n) {
-    let factors = [];
-    let divisor = 2;
-    while (n > 1) {
-        let count = 0;
-        while (n % divisor === 0) {
-            count++;
-            n /= divisor;
-        }
-        if (count > 0) factors.push([divisor, count]);
-        divisor = divisor === 2 ? 3 : divisor + 2;
-    }
-    if (n > 1) factors.push([n, 1]);
-    return factors;
-}
-
-function gcd(a, b) {
-    return b ? gcd(b, a % b) : a;
-}
-
-function lcm(a, b) {
-    return (a * b) / gcd(a, b);
 }
 
 function updateHistory() {
@@ -353,4 +328,4 @@ function updateHistory() {
 
 // Initialize
 openTab('problem-input');
-console.log('SMAIRT loaded with Grok 3 math');
+console.log('SMAIRT loaded with advanced features');
