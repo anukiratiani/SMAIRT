@@ -17,39 +17,54 @@ function correctSpelling(text) {
 
 function insertSymbol(symbol) {
     const textarea = document.getElementById('commandInput');
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const value = textarea.value;
-    textarea.value = value.substring(0, start) + symbol + value.substring(end);
-    textarea.focus();
-    textarea.selectionStart = textarea.selectionEnd = start + symbol.length;
+    if (textarea) {
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const value = textarea.value;
+        textarea.value = value.substring(0, start) + symbol + value.substring(end);
+        textarea.focus();
+        textarea.selectionStart = textarea.selectionEnd = start + symbol.length;
+    } else {
+        console.error('commandInput textarea not found');
+    }
 }
 
 function openTab(tabName) {
-    document.querySelectorAll('.tab-content').forEach(tab => tab.style.display = 'none');
-    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-    const selectedTab = document.getElementById(tabName);
-    if (selectedTab) {
-        selectedTab.style.display = 'block';
-        document.querySelector(`button[onclick="openTab('${tabName}')"]`).classList.add('active');
+    const tabs = document.querySelectorAll('.tab-content');
+    const buttons = document.querySelectorAll('.tab');
+    if (tabs.length > 0 && buttons.length > 0) {
+        tabs.forEach(tab => tab.style.display = 'none');
+        buttons.forEach(tab => tab.classList.remove('active'));
+        const selectedTab = document.getElementById(tabName);
+        if (selectedTab) {
+            selectedTab.style.display = 'block';
+            document.querySelector(`button[onclick="openTab('${tabName}')"]`).classList.add('active');
+        }
+        if (tabName === 'history') updateHistory();
+    } else {
+        console.error('Tab elements not found');
     }
-    if (tabName === 'history') updateHistory();
 }
 
 function submitQuery() {
-    const input = document.getElementById('commandInput').value.trim();
+    const input = document.getElementById('commandInput');
     const outputDiv = document.getElementById('output');
-    if (input) {
-        outputDiv.innerHTML += `<p>> ${input}</p>`;
-        const response = solveTextBasedMathQuery(input);
-        outputDiv.innerHTML += `<p class="response">${response}</p>`;
-        history.push({ query: input, response });
-        document.getElementById('commandInput').value = '';
-        outputDiv.scrollTop = outputDiv.scrollHeight;
+    if (input && outputDiv) {
+        const query = input.value.trim();
+        if (query) {
+            outputDiv.innerHTML += `<p>> ${query}</p>`;
+            const response = solveTextBasedMathQuery(query);
+            outputDiv.innerHTML += `<p class="response">${response}</p>`;
+            history.push({ query, response });
+            input.value = '';
+            outputDiv.scrollTop = outputDiv.scrollHeight;
+        }
+    } else {
+        console.error('commandInput or output div not found');
     }
 }
 
-document.getElementById('commandInput').addEventListener('keydown', function(event) {
+document.getElementById('commandInput')?.addEventListener('keydown', function(event) {
     if (event.key === 'Enter' && !event.shiftKey) {
         event.preventDefault();
         submitQuery();
@@ -86,11 +101,10 @@ function solveTextBasedMathQuery(query) {
     const operation = getOperation();
 
     if (operation === 'arithmetic' || query.match(/\d+\s*[+*\-/]\s*\d+/) || lowerQuery.includes('largest') || lowerQuery.includes('smallest')) {
-        // Handle descriptive number phrases
         let num1, num2, operator;
         if (lowerQuery.includes('largest two digit number') && lowerQuery.includes('smallest two digit number')) {
-            num1 = 99; // Largest two-digit number
-            num2 = 10; // Smallest two-digit number
+            num1 = 99;
+            num2 = 10;
             operator = lowerQuery.includes('minus') ? '-' : null;
         } else {
             const arithmeticMatch = query.match(/(\d+(\.\d+)?)\s*([+\-*/])\s*(\d+(\.\d+)?)/);
@@ -152,17 +166,11 @@ function solveTextBasedMathQuery(query) {
             if (expandMatch) {
                 const a = expandMatch[1], op = expandMatch[2], b = expandMatch[3], n = parseInt(expandMatch[4]);
                 if (n === 2) {
-                    response = op === '+' ?
-                        `Expanding (a + b)^2: a^2 + 2ab + b^2` :
-                        `Expanding (a - b)^2: a^2 - 2ab + b^2`;
+                    response = op === '+' ? `Expanding (a + b)^2: a^2 + 2ab + b^2` : `Expanding (a - b)^2: a^2 - 2ab + b^2`;
                 } else if (n === 3) {
-                    response = op === '+' ?
-                        `Expanding (a + b)^3: a^3 + 3a^2b + 3ab^2 + b^3` :
-                        `Expanding (a - b)^3: a^3 - 3a^2b + 3ab^2 - b^3`;
+                    response = op === '+' ? `Expanding (a + b)^3: a^3 + 3a^2b + 3ab^2 + b^3` : `Expanding (a - b)^3: a^3 - 3a^2b + 3ab^2 - b^3`;
                 } else if (n === 4) {
-                    response = op === '+' ?
-                        `Expanding (a + b)^4: a^4 + 4a^3b + 6a^2b^2 + 4ab^3 + b^4` :
-                        `Expanding (a - b)^4: a^4 - 4a^3b + 6a^2b^2 - 4ab^3 + b^4`;
+                    response = op === '+' ? `Expanding (a + b)^4: a^4 + 4a^3b + 6a^2b^2 + 4ab^3 + b^4` : `Expanding (a - b)^4: a^4 - 4a^3b + 6a^2b^2 - 4ab^3 + b^4`;
                 } else {
                     response = 'Error: Expansion supported for powers 2, 3, or 4 only.';
                 }
@@ -393,10 +401,15 @@ function solveTextBasedMathQuery(query) {
 
 function updateHistory() {
     const historyDiv = document.getElementById('history-output');
-    historyDiv.innerHTML = history.length ? 
-        history.map((entry, index) => `<p><strong>Query ${index + 1}:</strong> ${entry.query}<br><strong>Response:</strong> ${entry.response}</p>`).join('') :
-        '<p>No history available.</p>';
+    if (historyDiv) {
+        historyDiv.innerHTML = history.length ? 
+            history.map((entry, index) => `<p><strong>Query ${index + 1}:</strong> ${entry.query}<br><strong>Response:</strong> ${entry.response}</p>`).join('') :
+            '<p>No history available.</p>';
+    } else {
+        console.error('history-output div not found');
+    }
 }
 
 // Initialize
 openTab('problem-input');
+console.log('SMAIRT script loaded successfully');
