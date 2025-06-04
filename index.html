@@ -30,7 +30,7 @@
                 <div class="output" id="output"></div>
                 <div class="input-line">
                     <span class="prompt">> </span>
-                    <textarea id="commandInput" placeholder="Enter a mathematical problem (e.g., 'Expand (a + b)^2', '∫x^2 dx', 'Perimeter of a rectangle with sides 5 and 3', 'Convert 1010 base 2 to base 10', or 'Find √16')" autofocus></textarea>
+                    <textarea id="commandInput" placeholder="Enter a mathematical query (e.g., 'biggest two digited number', 'average of 4 and 6', '∫x^2 dx')" autofocus></textarea>
                     <button class="submit-btn" onclick="submitQuery()">Submit</button>
                 </div>
             </div>
@@ -41,23 +41,20 @@
         <div class="tab-content" id="help" style="display: none;">
             <div class="help-content">
                 <h2>Welcome to SMAIRT</h2>
-                <p>SMAIRT solves mathematical problems interactively, from algebra to Olympiad tasks.</p>
+                <p>SMAIRT solves advanced mathematical and statistical queries interactively.</p>
                 <h3>How to Use</h3>
                 <ul>
-                    <li>Describe a problem in the <strong>Problem Input</strong> tab or use the symbol table, then press <strong>Enter</strong> or click <strong>Submit</strong>.</li>
-                    <li>Click symbols (∫, ^2, ^, √, π, log, ln, lg, dx) to insert them.</li>
+                    <li>Enter queries in the <strong>Problem Input</strong> tab (e.g., 'average of 4 and 6'), use symbols, then press <strong>Enter</strong> or click <strong>Submit</strong>.</li>
+                    <li>Click symbols (∫, ^2, √, π, log, ln, lg, dx) to insert them.</li>
                     <li>View past queries in the <strong>History</strong> tab.</li>
                     <li>Use Shift+Enter for new lines.</li>
                 </ul>
                 <h3>Examples</h3>
                 <ul>
-                    <li>Algebra: "Expand (a + b)^2" or "Factor a^3 – b^3"</li>
-                    <li>Calculus: "Integrate x^2 from 0 to 1"</li>
-                    <li>Geometry: "Perimeter of a rectangle with sides 5 and 3"</li>
-                    <li>Bases: "Convert 1010 base 2 to base 10"</li>
-                    <li>Olympiad: "Find all integers n such that n^2 + 3n + 5 is a perfect square"</li>
-                    <li>Square root: "Find √16"</li>
-                    <li>Logarithms: "Find ln(2)"</li>
+                    <li>Descriptive: "biggest two digited number"</li>
+                    <li>Statistics: "average of 4 and 6", "median of 1, 3, 5", "mode of 1, 2, 2, 3"</li>
+                    <li>Algebra: "solve x^2 - 4 = 0"</li>
+                    <li>Calculus: "∫x^2 dx"</li>
                 </ul>
             </div>
         </div>
