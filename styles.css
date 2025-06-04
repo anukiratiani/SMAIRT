@@ -1,64 +1,171 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMAIRT - Smart Mathematics AI</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="container">
-        <div class="header">SMAIRT: Smart Mathematics AI for Reasoning and Text</div>
-        <div class="tabs">
-            <button class="tab active" onclick="openTab('problem-input')">Problem Input</button>
-            <button class="tab" onclick="openTab('history')">History</button>
-            <button class="tab" onclick="openTab('help')">Help</button>
-        </div>
-        <div class="tab-content" id="problem-input">
-            <div class="symbol-table">
-                <button class="symbol-btn" onclick="insertSymbol('∫')">∫</button>
-                <button class="symbol-btn" onclick="insertSymbol('^2')">^2</button>
-                <button class="symbol-btn" onclick="insertSymbol('^')">^</button>
-                <button class="symbol-btn" onclick="insertSymbol('√')">√</button>
-                <button class="symbol-btn" onclick="insertSymbol('π')">π</button>
-                <button class="symbol-btn" onclick="insertSymbol('log')">log</button>
-                <button class="symbol-btn" onclick="insertSymbol('ln')">ln</button>
-                <button class="symbol-btn" onclick="insertSymbol('lg')">lg</button>
-                <button class="symbol-btn" onclick="insertSymbol('dx')">dx</button>
-            </div>
-            <div class="terminal">
-                <div class="output" id="output"></div>
-                <div class="input-line">
-                    <span class="prompt">> </span>
-                    <textarea id="commandInput" placeholder="Enter a mathematical query (e.g., 'biggest two digited number', 'average of 4 and 6', '∫x^2 dx')" autofocus></textarea>
-                    <button class="submit-btn" onclick="submitQuery()">Submit</button>
-                </div>
-            </div>
-        </div>
-        <div class="tab-content" id="history" style="display: none;">
-            <div class="history" id="history-output"></div>
-        </div>
-        <div class="tab-content" id="help" style="display: none;">
-            <div class="help-content">
-                <h2>Welcome to SMAIRT</h2>
-                <p>SMAIRT solves advanced mathematical and statistical queries interactively.</p>
-                <h3>How to Use</h3>
-                <ul>
-                    <li>Enter queries in the <strong>Problem Input</strong> tab (e.g., 'average of 4 and 6'), use symbols, then press <strong>Enter</strong> or click <strong>Submit</strong>.</li>
-                    <li>Click symbols (∫, ^2, √, π, log, ln, lg, dx) to insert them.</li>
-                    <li>View past queries in the <strong>History</strong> tab.</li>
-                    <li>Use Shift+Enter for new lines.</li>
-                </ul>
-                <h3>Examples</h3>
-                <ul>
-                    <li>Descriptive: "biggest two digited number"</li>
-                    <li>Statistics: "average of 4 and 6", "median of 1, 3, 5", "mode of 1, 2, 2, 3"</li>
-                    <li>Algebra: "solve x^2 - 4 = 0"</li>
-                    <li>Calculus: "∫x^2 dx"</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-    <script src="script.js"></script>
-</body>
-</html>
+body {
+    background-color: #1c1c1c;
+    color: #d4af37;
+    font-family: 'Courier New', monospace;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.container {
+    width: 90%;
+    max-width: 900px;
+    background-color: #000;
+    border: 2px solid #d4af37;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    overflow: hidden;
+}
+.header {
+    background-color: #d4af37;
+    color: #000;
+    padding: 15px;
+    font-size: 1.5em;
+    text-align: center;
+    font-weight: bold;
+}
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #d4af37;
+}
+.tab {
+    flex: 1;
+    padding: 10px;
+    background-color: #333;
+    color: #d4af37;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+.tab:hover {
+    background-color: #4a4a4a;
+}
+.tab.active {
+    background-color: #d4af37;
+    color: #000;
+}
+.tab-content {
+    padding: 20px;
+}
+.symbol-table {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+.symbol-btn {
+    background-color: #333;
+    color: #d4af37;
+    border: 1px solid #d4af37;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+.symbol-btn:hover {
+    background-color: #d4af37;
+    color: #000;
+}
+.terminal {
+    background-color: #000;
+    border: 1px solid #d4af37;
+    border-radius: 5px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+}
+.output, .history {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+    color: #d4af37;
+}
+.input-line {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-top: 1px solid #d4af37;
+}
+.prompt {
+    margin-right: 10px;
+    color: #d4af37;
+}
+#commandInput {
+    background: none;
+    border: none;
+    color: #d4af37;
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    flex-grow: 1;
+    outline: none;
+    resize: none;
+    height: 60px;
+}
+#commandInput::placeholder {
+    color: #b8972e;
+}
+.submit-btn {
+    background-color: #d4af37;
+    color: #000;
+    border: none;
+    padding: 8px 15px;
+    margin-left: 10px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+.submit-btn:hover {
+    background-color: #e6c84f;
+}
+.help-content {
+    color: #d4af37;
+    padding: 20px;
+}
+.help-content h2, .help-content h3 {
+    color: #e6c84f;
+}
+.help-content ul {
+    list-style-type: square;
+    padding-left: 20px;
+}
+.stats-toggle {
+    text-align: center;
+    padding: 5px;
+    cursor: pointer;
+    color: #d4af37;
+    transition: color 0.3s;
+}
+.stats-toggle:hover {
+    color: #e6c84f;
+}
+.stats-buttons {
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+}
+.stat-btn {
+    background-color: #333;
+    color: #d4af37;
+    border: 1px solid #d4af37;
+    padding: 5px 10px;
+    cursor: pointer;
+    font-family: 'Courier New', monospace;
+    border-radius: 3px;
+    transition: background-color 0.3s;
+}
+.stat-btn:hover {
+    background-color: #d4af37;
+    color: #000;
+}
+@media (max-width: 600px) {
+    .container { width: 95%; }
+    .tab, .symbol-btn, .stat-btn { font-size: 0.9em; }
+    .submit-btn { padding: 6px 10px; }
+}
