@@ -13,9 +13,11 @@ const spellCheckDict = {
 
 function correctSpelling(text) {
     let corrected = text.toLowerCase();
-    for (const [wrong, right] of ObjectBTW.entries(spellCheckDict)) {
+    // FIX: Changed 'ObjectBTW.entries' to 'Object.entries'
+    for (const [wrong, right] of Object.entries(spellCheckDict)) {
         corrected = corrected.replace(new RegExp(`\\b${wrong}\\b`, 'gi'), right);
     }
+    // This line seems to be redundant if 'two digited' is already in spellCheckDict, but it doesn't hurt.
     return corrected.replace(/\s+digited/g, '-digit');
 }
 
@@ -24,17 +26,20 @@ function extractNumbers(text) {
 }
 
 function calculateAverage(nums) {
+    if (nums.length === 0) return 'N/A'; // Handle empty array
     const sum = nums.reduce((a, b) => a + b, 0);
     return (sum / nums.length).toFixed(2);
 }
 
 function calculateMedian(nums) {
+    if (nums.length === 0) return 'N/A'; // Handle empty array
     const sorted = nums.slice().sort((a, b) => a - b);
     const mid = Math.floor(sorted.length / 2);
     return sorted.length % 2 === 0 ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2) : sorted[mid].toFixed(2);
 }
 
 function calculateMode(nums) {
+    if (nums.length === 0) return 'N/A'; // Handle empty array
     const freq = {};
     nums.forEach(num => freq[num] = (freq[num] || 0) + 1);
     const maxFreq = Math.max(...Object.values(freq));
@@ -43,6 +48,7 @@ function calculateMode(nums) {
 }
 
 function calculateRange(nums) {
+    if (nums.length === 0) return 'N/A'; // Handle empty array
     const sorted = nums.slice().sort((a, b) => a - b);
     return (sorted[sorted.length - 1] - sorted[0]).toFixed(2);
 }
@@ -70,11 +76,19 @@ function openTab(tabName) {
         const selectedTab = document.getElementById(tabName);
         if (selectedTab) {
             selectedTab.style.display = 'block';
-            document.querySelector(`button[onclick="openTab('${tabName}')"]`).classList.add('active');
+            // FIX: Ensure the button is found using a more robust selector
+            const activeButton = document.querySelector(`.tab[onclick="openTab('${tabName}')"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+            } else {
+                console.warn(`Button for tab '${tabName}' not found.`);
+            }
+        } else {
+            console.error(`Tab content with ID '${tabName}' not found.`);
         }
         if (tabName === 'history') updateHistory();
     } else {
-        console.error('Tab elements not found');
+        console.error('Tab elements not found (tabs or buttons).');
     }
 }
 
@@ -100,15 +114,27 @@ function submitQuery() {
 function toggleStats() {
     const statsButtons = document.getElementById('statsButtons');
     const toggle = document.querySelector('.stats-toggle');
-    statsVisible = !statsVisible;
-    statsButtons.style.display = statsVisible ? 'flex' : 'none';
-    toggle.textContent = `▼ ${statsVisible ? 'Hide' : 'Statistical Tools'}`;
+    if (statsButtons && toggle) { // Ensure elements exist before manipulating
+        statsVisible = !statsVisible;
+        statsButtons.style.display = statsVisible ? 'flex' : 'none';
+        toggle.textContent = `▼ ${statsVisible ? 'Hide' : 'Statistical Tools'}`;
+    } else {
+        console.error('Stats buttons or toggle element not found.');
+    }
 }
 
 function calculateStat(statType) {
-    const input = document.getElementById('commandInput').value.trim();
-    const numbers = extractNumbers(input);
+    const inputElement = document.getElementById('commandInput');
     const outputDiv = document.getElementById('output');
+
+    if (!inputElement || !outputDiv) {
+        console.error('commandInput or output div not found');
+        return;
+    }
+
+    const input = inputElement.value.trim();
+    const numbers = extractNumbers(input);
+    
     if (numbers.length > 0) {
         let result;
         switch (statType) {
@@ -116,15 +142,14 @@ function calculateStat(statType) {
             case 'mode': result = `The mode is ${calculateMode(numbers)}.`; break;
             case 'median': result = `The median is ${calculateMedian(numbers)}.`; break;
             case 'range': result = `The range is ${calculateRange(numbers)}.`; break;
+            default: result = 'Unknown statistical operation.'; break; // Added default case
         }
-        if (outputDiv) {
-            outputDiv.innerHTML += `<p>> ${statType} of ${input}</p>`;
-            outputDiv.innerHTML += `<p class="response">${result}</p>`;
-            history.push({ query: `${statType} of ${input}`, response: result });
-            outputDiv.scrollTop = outputDiv.scrollHeight;
-        }
+        outputDiv.innerHTML += `<p>> ${statType} of ${input}</p>`;
+        outputDiv.innerHTML += `<p class="response">${result}</p>`;
+        history.push({ query: `${statType} of ${input}`, response: result });
+        outputDiv.scrollTop = outputDiv.scrollHeight;
     } else {
-        if (outputDiv) outputDiv.innerHTML += `<p class="response">Error: No numbers found in "${input}".</p>`;
+        outputDiv.innerHTML += `<p class="response">Error: No numbers found in "${input}".</p>`;
     }
 }
 
@@ -161,14 +186,22 @@ function solveTextBasedMathQuery(query) {
         else response = 'Error: No numbers provided.';
     } else if (lowerQuery.includes('range')) {
         if (numbers.length > 0) response = `The range is ${calculateRange(numbers)}.`;
+        else response = 'Error: No numbers provided.'; // Added handling for no numbers
     } else if (query.match(/(\d+(\.\d+)?)\s*([+\-*/])\s*(\d+(\.\d+)?)/)) {
-        const [_, num1, __, operator, num2] = query.match(/(\d+(\.\d+)?)\s*([+\-*/])\s*(\d+(\.\d+)?)/);
-        const n1 = parseFloat(num1), n2 = parseFloat(num2);
-        switch (operator) {
-            case '+': response = `Result: ${n1} + ${n2} = ${n1 + n2}`; break;
-            case '-': response = `Result: ${n1} - ${n2} = ${n1 - n2}`; break;
-            case '*': response = `Result: ${n1} * ${n2} = ${n1 * n2}`; break;
-            case '/': response = n2 !== 0 ? `Result: ${n1} / ${n2} = ${(n1 / n2).toFixed(2)}` : 'Error: Division by zero'; break;
+        const match = query.match(/(\d+(\.\d+)?)\s*([+\-*/])\s*(\d+(\.\d+)?)/);
+        // FIX: Ensure match is not null before destructuring
+        if (match) {
+            const [_, num1, __, operator, num2] = match;
+            const n1 = parseFloat(num1), n2 = parseFloat(num2);
+            switch (operator) {
+                case '+': response = `Result: ${n1} + ${n2} = ${n1 + n2}`; break;
+                case '-': response = `Result: ${n1} - ${n2} = ${n1 - n2}`; break;
+                case '*': response = `Result: ${n1} * ${n2} = ${n1 * n2}`; break;
+                case '/': response = n2 !== 0 ? `Result: ${n1} / ${n2} = ${(n1 / n2).toFixed(2)}` : 'Error: Division by zero'; break;
+                default: response = 'Error: Invalid arithmetic operation.'; // Added default case
+            }
+        } else {
+            response = 'Error: Could not parse arithmetic expression.';
         }
     } else if (lowerQuery.includes('solve') && lowerQuery.includes('x^2')) {
         const match = query.match(/x\^2\s*([+\-])\s*(\d+)\s*([+\-])\s*(\d+)/);
@@ -178,12 +211,13 @@ function solveTextBasedMathQuery(query) {
             const discriminant = b * b - 4 * c;
             if (discriminant >= 0) {
                 const sqrtD = Math.sqrt(discriminant);
+                // FIX: Corrected quadratic formula for x^2 + bx + c = 0, solutions are (-b +/- sqrt(D)) / 2a. Here a=1
                 response = `Solutions: x = ${(-b + sqrtD) / 2}, x = ${(-b - sqrtD) / 2}`;
             } else {
                 response = 'No real solutions.';
             }
         } else {
-            response = 'Error: Invalid equation.';
+            response = 'Error: Invalid quadratic equation format. Try "solve x^2 + 4 + 5".';
         }
     } else if (lowerQuery.includes('∫') || lowerQuery.includes('integrate')) {
         if (lowerQuery.includes('x^2')) response = '∫x^2 dx = (x^3)/3 + C';
@@ -199,10 +233,15 @@ function updateHistory() {
     const historyDiv = document.getElementById('history-output');
     if (historyDiv) {
         historyDiv.innerHTML = history.length ? 
-            history.map((entry, index) => `<p><strong>${index + 1}:</strong> ${entry.query}<br>${entry.response}</p>`).join('') :
+            history.map((entry, index) => `<p><strong>${index + 1}:</strong> ${entry.query}<br>Response: ${entry.response}</p>`).join('') : // Added "Response:" for clarity
             '<p>No history.</p>';
+    } else {
+        console.error('History output div not found.');
     }
 }
 
-openTab('problem-input');
-console.log('SMAIRT loaded');
+// Ensure DOM is fully loaded before trying to access elements
+document.addEventListener('DOMContentLoaded', () => {
+    openTab('problem-input'); // Open the initial tab
+    console.log('SMAIRT loaded');
+});
