@@ -1,6 +1,8 @@
+/* General Body Styles */
 body {
-    background-color: #1c1c1c;
-    color: #d4af37;
+    /* Enchanted background: A soft, linear gradient from a pale aqua to a mint green */
+    background: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 100%); /* Pale Aqua to Mint Green */
+    color: #4a5568; /* Soft, desaturated dark blue-grey for general text */
     font-family: 'Courier New', monospace;
     margin: 0;
     display: flex;
@@ -8,48 +10,65 @@ body {
     align-items: center;
     min-height: 100vh;
 }
+
+/* Main Container */
 .container {
     width: 90%;
     max-width: 900px;
-    background-color: #000;
-    border: 2px solid #d4af37;
+    /* Slightly transparent white background to hint at the enchanted body background */
+    background-color: rgba(255, 255, 255, 0.95);
+    border: 2px solid #b2ebf2; /* Pale aqua border */
     border-radius: 8px;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+    /* Enchanted glow effect */
+    box-shadow: 0 0 25px rgba(178, 235, 242, 0.7); /* Soft aqua glow */
     overflow: hidden;
 }
+
+/* Header (SMAIRT Title) */
 .header {
-    background-color: #d4af37;
-    color: #000;
+    background-color: #80deea; /* Slightly more saturated aqua for contrast */
+    color: #263238; /* Darker grey-blue for header text */
     padding: 15px;
     font-size: 1.5em;
     text-align: center;
     font-weight: bold;
+    /* Subtle text shadow for a glowing effect */
+    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
 }
+
+/* Tabs Navigation */
 .tabs {
     display: flex;
-    border-bottom: 1px solid #d4af37;
+    border-bottom: 1px solid #80deea; /* Aqua border for tabs */
 }
+
 .tab {
     flex: 1;
     padding: 10px;
-    background-color: #333;
-    color: #d4af37;
+    background-color: #e0f7fa; /* Light aqua background for inactive tabs */
+    color: #4a5568; /* Dark grey-blue text for inactive tabs */
     border: none;
     cursor: pointer;
     text-align: center;
     font-size: 1em;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
 }
+
 .tab:hover {
-    background-color: #4a4a4a;
+    background-color: #c0f2f7; /* Slightly darker aqua on hover */
 }
+
 .tab.active {
-    background-color: #d4af37;
-    color: #000;
+    background-color: #80deea; /* Active tab is more saturated aqua */
+    color: #263238; /* Darker text for active tab */
 }
+
+/* Tab Content Areas (Problem Input, History, Help) */
 .tab-content {
     padding: 20px;
 }
+
+/* Symbol Button Table */
 .symbol-table {
     display: flex;
     justify-content: center;
@@ -57,50 +76,65 @@ body {
     margin-bottom: 10px;
     flex-wrap: wrap;
 }
+
 .symbol-btn {
-    background-color: #333;
-    color: #d4af37;
-    border: 1px solid #d4af37;
+    background-color: #e0f7fa; /* Light aqua background for symbol buttons */
+    color: #4a5568; /* Dark grey-blue text */
+    border: 1px solid #80deea; /* Aqua border */
     padding: 5px 10px;
     cursor: pointer;
     font-family: 'Courier New', monospace;
     font-size: 14px;
     border-radius: 3px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
+
 .symbol-btn:hover {
-    background-color: #d4af37;
-    color: #000;
+    background-color: #80deea; /* More saturated aqua on hover */
+    color: #263238; /* Darker text on hover */
+    border-color: #4dd0e1; /* Darker aqua border on hover */
 }
+
+/* Terminal Area (Output and Input) */
 .terminal {
-    background-color: #000;
-    border: 1px solid #d4af37;
+    background-color: #fcfcfc; /* Very light, almost white background for terminal */
+    border: 1px solid #b2ebf2; /* Pale aqua border for terminal */
     border-radius: 5px;
-    height: 400px; /* Consider using max-height and flex-grow for better responsiveness */
+    height: 400px;
     display: flex;
     flex-direction: column;
 }
+
 .output, .history {
     flex-grow: 1;
     padding: 10px;
     overflow-y: auto;
-    color: #d4af37;
-    word-wrap: break-word; /* Added for long responses */
+    color: #4a5568; /* General text color */
+    word-wrap: break-word; /* Ensure long responses wrap */
 }
+
+/* Custom response text color for output */
+.output p.response {
+    color: #2e7d32; /* A slightly darker green for responses, for better readability */
+}
+
+
 .input-line {
     display: flex;
     align-items: center;
     padding: 10px;
-    border-top: 1px solid #d4af37;
+    border-top: 1px solid #e0f7fa; /* Lighter, softer border for input line */
 }
+
 .prompt {
     margin-right: 10px;
-    color: #d4af37;
+    color: #607d8b; /* Medium grey-blue for prompt */
 }
+
 #commandInput {
     background: none;
     border: none;
-    color: #d4af37;
+    color: #4a5568; /* Text color for input */
     font-family: 'Courier New', monospace;
     font-size: 16px;
     flex-grow: 1;
@@ -110,68 +144,87 @@ body {
     height: 60px; /* Default height */
     max-height: 150px; /* Max height to prevent it from taking too much space */
 }
+
 #commandInput::placeholder {
-    color: #b8972e;
+    color: #a7b2c5; /* Lighter grey-blue for placeholder */
 }
+
+/* Submit Button */
 .submit-btn {
-    background-color: #d4af37;
-    color: #000;
+    background-color: #80deea; /* Aqua background for submit button */
+    color: #263238; /* Darker text for submit button */
     border: none;
     padding: 8px 15px;
     margin-left: 10px;
     cursor: pointer;
     font-family: 'Courier New', monospace;
     border-radius: 3px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
 }
+
 .submit-btn:hover {
-    background-color: #e6c84f;
+    background-color: #4dd0e1; /* Darker aqua on hover */
+    color: #ffffff; /* White text on hover for better contrast */
 }
+
+/* Help Content */
 .help-content {
-    color: #d4af37;
+    color: #4a5568; /* General text color for help content */
     padding: 20px;
 }
+
 .help-content h2, .help-content h3 {
-    color: #e6c84f;
+    color: #4dd0e1; /* Accent color for help headings */
 }
+
 .help-content ul {
     list-style-type: square;
     padding-left: 20px;
 }
+
+/* Statistical Tools Toggle */
 .stats-toggle {
     text-align: center;
     padding: 5px;
     cursor: pointer;
-    color: #d4af37;
+    color: #607d8b; /* Medium grey-blue */
     transition: color 0.3s;
-    border-top: 1px solid #d4af37; /* Added border to separate from input-line */
+    border-top: 1px solid #e0f7fa; /* Lighter border to separate from input */
 }
+
 .stats-toggle:hover {
-    color: #e6c84f;
+    color: #4dd0e1; /* Accent color on hover */
 }
+
+/* Statistical Buttons */
 .stats-buttons {
     display: flex;
     justify-content: space-around;
     padding: 10px 0;
-    border-top: 1px solid #d4af37; /* Added border for separation */
+    border-top: 1px solid #e0f7fa; /* Lighter border for separation */
 }
+
 .stat-btn {
-    background-color: #333;
-    color: #d4af37;
-    border: 1px solid #d4af37;
+    background-color: #e0f7fa; /* Light aqua background */
+    color: #4a5568; /* Dark grey-blue text */
+    border: 1px solid #80deea; /* Aqua border */
     padding: 5px 10px;
     cursor: pointer;
     font-family: 'Courier New', monospace;
     border-radius: 3px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
+
 .stat-btn:hover {
-    background-color: #d4af37;
-    color: #000;
+    background-color: #80deea; /* More saturated aqua on hover */
+    color: #263238; /* Darker text on hover */
+    border-color: #4dd0e1; /* Darker aqua border on hover */
 }
+
+/* Responsive Adjustments */
 @media (max-width: 600px) {
     .container { width: 95%; }
     .tab, .symbol-btn, .stat-btn { font-size: 0.9em; }
     .submit-btn { padding: 6px 10px; }
-    #commandInput { height: 40px; } /* Adjust height for smaller screens */
+    #commandInput { height: 40px; }
 }
