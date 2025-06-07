@@ -216,8 +216,14 @@ function solveTextBasedMathQuery(query) {
             response = 'Error: Invalid quadratic equation format. Try "solve x^2 - 4 = 0" or "solve x^2 + 9 = 0".';
         }
     } else if (lowerQuery.includes('∫') || lowerQuery.includes('integrate')) {
-        // --- START INTEGRATION EXPANSION ---
-        if (lowerQuery.includes('x^2 dx')) {
+        // --- START ADVANCED INTEGRATION (specific pattern) ---
+        // Recognize ∫sin(x)cos(x) dx using u-substitution
+        if ((lowerQuery.includes('sin(x)') && lowerQuery.includes('cos(x)')) && lowerQuery.includes('dx')) {
+            response = '∫sin(x)cos(x) dx = (sin(x))^2/2 + C (using u-substitution)';
+        }
+        // --- END ADVANCED INTEGRATION ---
+        // Basic integral formulas (order matters - specific rules first)
+        else if (lowerQuery.includes('x^2 dx')) {
             response = '∫x^2 dx = (x^3)/3 + C';
         } else if (lowerQuery.includes('x dx')) {
             response = '∫x dx = (x^2)/2 + C';
@@ -229,13 +235,13 @@ function solveTextBasedMathQuery(query) {
             response = '∫sin(x) dx = -cos(x) + C';
         } else if (lowerQuery.includes('cos(x) dx')) {
             response = '∫cos(x) dx = sin(x) + C';
-        } else if (lowerQuery.includes('1 dx') || lowerQuery.includes('dx')) { // Covers ∫1 dx and just ∫dx
+        } else if (lowerQuery.includes('1 dx') || lowerQuery.includes('dx')) {
              response = '∫1 dx = x + C';
         }
+        // General error for unsupported forms
         else {
-            response = 'Error: Only specific integral forms (e.g., ∫x^2 dx, ∫1/x dx, ∫sin(x) dx) are supported for now.';
+            response = 'Error: Specific integral forms are supported (e.g., ∫x^2 dx, ∫1/x dx, ∫sin(x) dx, ∫sin(x)cos(x) dx), but this one is not yet.';
         }
-        // --- END INTEGRATION EXPANSION ---
     } else {
         response = 'Sorry, I don’t recognize that command. Try "biggest two-digit number", "average of 4 and 6", or an integral like "∫x^2 dx".';
     }
