@@ -13,11 +13,10 @@ const spellCheckDict = {
 
 function correctSpelling(text) {
     let corrected = text.toLowerCase();
-    // FIX: Changed 'ObjectBTW.entries' to 'Object.entries'
     for (const [wrong, right] of Object.entries(spellCheckDict)) {
         corrected = corrected.replace(new RegExp(`\\b${wrong}\\b`, 'gi'), right);
     }
-    return corrected.replace(/\s+digited/g, '-digit'); // Keep this for consistency, though 'two digited' is in dict
+    return corrected.replace(/\s+digited/g, '-digit');
 }
 
 function extractNumbers(text) {
@@ -25,20 +24,20 @@ function extractNumbers(text) {
 }
 
 function calculateAverage(nums) {
-    if (nums.length === 0) return 'N/A'; // Handle empty array
+    if (nums.length === 0) return 'N/A';
     const sum = nums.reduce((a, b) => a + b, 0);
     return (sum / nums.length).toFixed(2);
 }
 
 function calculateMedian(nums) {
-    if (nums.length === 0) return 'N/A'; // Handle empty array
+    if (nums.length === 0) return 'N/A';
     const sorted = nums.slice().sort((a, b) => a - b);
     const mid = Math.floor(sorted.length / 2);
     return sorted.length % 2 === 0 ? ((sorted[mid - 1] + sorted[mid]) / 2).toFixed(2) : sorted[mid].toFixed(2);
 }
 
 function calculateMode(nums) {
-    if (nums.length === 0) return 'N/A'; // Handle empty array
+    if (nums.length === 0) return 'N/A';
     const freq = {};
     nums.forEach(num => freq[num] = (freq[num] || 0) + 1);
     const maxFreq = Math.max(...Object.values(freq));
@@ -47,7 +46,7 @@ function calculateMode(nums) {
 }
 
 function calculateRange(nums) {
-    if (nums.length === 0) return 'N/A'; // Handle empty array
+    if (nums.length === 0) return 'N/A';
     const sorted = nums.slice().sort((a, b) => a - b);
     return (sorted[sorted.length - 1] - sorted[0]).toFixed(2);
 }
@@ -91,31 +90,31 @@ function openTab(tabName) {
 }
 
 function submitQuery() {
-    console.log('submitQuery function called.'); // Debugging log
+    console.log('submitQuery function called.');
     const input = document.getElementById('commandInput');
     const outputDiv = document.getElementById('output');
 
     if (!input || !outputDiv) {
         console.error('submitQuery: commandInput or output div not found. Input element:', input, 'Output div:', outputDiv);
-        return; // Exit function if elements are missing
+        return;
     }
 
     let query = input.value.trim();
-    console.log('Query received:', query); // Debugging log
+    console.log('Query received:', query);
 
     if (query) {
         const correctedQuery = correctSpelling(query);
-        console.log('Corrected Query:', correctedQuery); // Debugging log
+        console.log('Corrected Query:', correctedQuery);
         outputDiv.innerHTML += `<p>> ${correctedQuery}</p>`;
         const response = solveTextBasedMathQuery(correctedQuery);
         outputDiv.innerHTML += `<p class="response">${response}</p>`;
         history.push({ query: correctedQuery, response });
-        input.value = ''; // Clear input field
-        outputDiv.scrollTop = outputDiv.scrollHeight; // Scroll to bottom
+        input.value = '';
+        outputDiv.scrollTop = outputDiv.scrollHeight;
     } else {
         outputDiv.innerHTML += `<p class="response">Please enter a query.</p>`;
         outputDiv.scrollTop = outputDiv.scrollHeight;
-        console.log('Empty query submitted.'); // Debugging log for empty input
+        console.log('Empty query submitted.');
     }
 }
 
@@ -204,29 +203,10 @@ function solveTextBasedMathQuery(query) {
             response = 'Error: Could not parse arithmetic expression.';
         }
     } else if (lowerQuery.includes('solve') && lowerQuery.includes('x^2')) {
-        // Updated regex to correctly capture coefficients 'b' and 'c' for x^2 + bx + c = 0
-        // This regex looks for x^2, optionally followed by + or - and a number (for b),
-        // optionally followed by + or - and a number (for c).
-        // Example queries: "solve x^2 + 2x + 1 = 0", "solve x^2 - 4 = 0" (assumes b=0 if not present)
-        // For simplicity with current regex, it's expecting "x^2 +/- number +/- number"
-        // Original regex was trying to match "x^2 OPERATOR number OPERATOR number"
-        // Let's refine for a more standard form: ax^2 + bx + c = 0.
-        // Given your current example "x^2 - 4 = 0" implies a=1, b=0, c=-4
-        // And "solve x^2 - 4 + 5" implies x^2 - 4x + 5 = 0 (this interpretation is problematic)
-
-        // For the provided example "solve x^2 - 4 = 0", it implies:
-        // x^2 + 0x - 4 = 0 -> a=1, b=0, c=-4
-        // The current regex `x\^2\s*([+\-])\s*(\d+)\s*([+\-])\s*(\d+)` is for (x^2 +/- num1 +/- num2)
-        // This is interpreted as x^2 + b + c where b and c are constants, not coefficients.
-        // Let's adjust to be able to handle "x^2 - 4 = 0"
-        
-        // Simpler approach for the given examples, assumes b=0 if not specified as part of a term.
-        // For "x^2 +/- C = 0"
         const constOnlyMatch = query.match(/x\^2\s*([+\-])\s*(\d+)\s*=\s*0/);
         if (constOnlyMatch) {
             const c = constOnlyMatch[1] === '-' ? -parseInt(constOnlyMatch[2]) : parseInt(constOnlyMatch[2]);
-            // Solving x^2 + c = 0 => x^2 = -c
-            if (-c >= 0) { // If -c is positive or zero
+            if (-c >= 0) {
                 const sqrtC = Math.sqrt(-c);
                 response = `Solutions: x = ${sqrtC}, x = ${-sqrtC}`;
             } else {
@@ -236,10 +216,28 @@ function solveTextBasedMathQuery(query) {
             response = 'Error: Invalid quadratic equation format. Try "solve x^2 - 4 = 0" or "solve x^2 + 9 = 0".';
         }
     } else if (lowerQuery.includes('∫') || lowerQuery.includes('integrate')) {
-        if (lowerQuery.includes('x^2')) response = '∫x^2 dx = (x^3)/3 + C';
-        else response = 'Error: Only ∫x^2 dx is supported for now.';
+        // --- START INTEGRATION EXPANSION ---
+        if (lowerQuery.includes('x^2 dx')) {
+            response = '∫x^2 dx = (x^3)/3 + C';
+        } else if (lowerQuery.includes('x dx')) {
+            response = '∫x dx = (x^2)/2 + C';
+        } else if (lowerQuery.includes('1/x dx')) {
+            response = '∫1/x dx = ln|x| + C';
+        } else if (lowerQuery.includes('e^x dx')) {
+            response = '∫e^x dx = e^x + C';
+        } else if (lowerQuery.includes('sin(x) dx')) {
+            response = '∫sin(x) dx = -cos(x) + C';
+        } else if (lowerQuery.includes('cos(x) dx')) {
+            response = '∫cos(x) dx = sin(x) + C';
+        } else if (lowerQuery.includes('1 dx') || lowerQuery.includes('dx')) { // Covers ∫1 dx and just ∫dx
+             response = '∫1 dx = x + C';
+        }
+        else {
+            response = 'Error: Only specific integral forms (e.g., ∫x^2 dx, ∫1/x dx, ∫sin(x) dx) are supported for now.';
+        }
+        // --- END INTEGRATION EXPANSION ---
     } else {
-        response = 'Sorry, I don’t recognize that command. Try "biggest two-digit number", "average of 4 and 6", or "∫x^2 dx".';
+        response = 'Sorry, I don’t recognize that command. Try "biggest two-digit number", "average of 4 and 6", or an integral like "∫x^2 dx".';
     }
 
     return response;
@@ -256,17 +254,15 @@ function updateHistory() {
     }
 }
 
-// Ensure DOM is fully loaded before trying to access elements and attach listeners
 document.addEventListener('DOMContentLoaded', () => {
-    openTab('problem-input'); // Open the initial tab
+    openTab('problem-input');
     console.log('SMAIRT loaded');
 
-    // Attach keydown event listener for the textarea (Enter key submission)
     const commandInputTextarea = document.getElementById('commandInput');
     if (commandInputTextarea) {
         commandInputTextarea.addEventListener('keydown', function(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault(); // Prevent default new line behavior
+                event.preventDefault();
                 submitQuery();
             }
         });
@@ -275,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('commandInput textarea not found for keydown listener.');
     }
 
-    // Attach click event listener for the Submit button
     const submitButton = document.getElementById('submitBtn');
     if (submitButton) {
         submitButton.addEventListener('click', submitQuery);
