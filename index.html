@@ -31,7 +31,7 @@
                 <div class="input-line">
                     <span class="prompt">> </span>
                     <textarea id="commandInput" placeholder="Enter a query (e.g., 'biggest two digited number', 'avrge of 4 and 6')" autofocus></textarea>
-                    <button class="submit-btn" onclick="submitQuery()">Submit</button>
+                    <button class="submit-btn" id="submitBtn">Submit</button>
                 </div>
                 <div class="stats-toggle" onclick="toggleStats()">▼ Statistical Tools</div>
                 <div class="stats-buttons" id="statsButtons" style="display: none;">
@@ -61,7 +61,7 @@
                 <ul>
                     <li>Descriptive: "biggest two digited number"</li>
                     <li>Statistics: "average of 4 and 6", "median of 1, 3, 5", "mode of 1, 2, 2, 3", "range of 1 and 5"</li>
-                    <li>Algebra: "solve x^2 - 4 = 0"</li>
+                    <li>Algebra: "solve x^2 - 4 = 0" (Note: format for quadratic is $x^2 \pm b \pm c$)</li>
                     <li>Calculus: "∫x^2 dx"</li>
                 </ul>
             </div>
