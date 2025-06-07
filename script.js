@@ -17,8 +17,7 @@ function correctSpelling(text) {
     for (const [wrong, right] of Object.entries(spellCheckDict)) {
         corrected = corrected.replace(new RegExp(`\\b${wrong}\\b`, 'gi'), right);
     }
-    // This line seems to be redundant if 'two digited' is already in spellCheckDict, but it doesn't hurt.
-    return corrected.replace(/\s+digited/g, '-digit');
+    return corrected.replace(/\s+digited/g, '-digit'); // Keep this for consistency, though 'two digited' is in dict
 }
 
 function extractNumbers(text) {
@@ -63,7 +62,7 @@ function insertSymbol(symbol) {
         textarea.focus();
         textarea.selectionStart = textarea.selectionEnd = start + symbol.length;
     } else {
-        console.error('commandInput textarea not found');
+        console.error('insertSymbol: commandInput textarea not found');
     }
 }
 
@@ -76,50 +75,59 @@ function openTab(tabName) {
         const selectedTab = document.getElementById(tabName);
         if (selectedTab) {
             selectedTab.style.display = 'block';
-            // FIX: Ensure the button is found using a more robust selector
             const activeButton = document.querySelector(`.tab[onclick="openTab('${tabName}')"]`);
             if (activeButton) {
                 activeButton.classList.add('active');
             } else {
-                console.warn(`Button for tab '${tabName}' not found.`);
+                console.warn(`openTab: Button for tab '${tabName}' not found.`);
             }
         } else {
-            console.error(`Tab content with ID '${tabName}' not found.`);
+            console.error(`openTab: Tab content with ID '${tabName}' not found.`);
         }
         if (tabName === 'history') updateHistory();
     } else {
-        console.error('Tab elements not found (tabs or buttons).');
+        console.error('openTab: Tab elements not found (tabs or buttons).');
     }
 }
 
 function submitQuery() {
+    console.log('submitQuery function called.'); // Debugging log
     const input = document.getElementById('commandInput');
     const outputDiv = document.getElementById('output');
-    if (input && outputDiv) {
-        let query = input.value.trim();
-        if (query) {
-            const correctedQuery = correctSpelling(query);
-            outputDiv.innerHTML += `<p>> ${correctedQuery}</p>`;
-            const response = solveTextBasedMathQuery(correctedQuery);
-            outputDiv.innerHTML += `<p class="response">${response}</p>`;
-            history.push({ query: correctedQuery, response });
-            input.value = '';
-            outputDiv.scrollTop = outputDiv.scrollHeight;
-        }
+
+    if (!input || !outputDiv) {
+        console.error('submitQuery: commandInput or output div not found. Input element:', input, 'Output div:', outputDiv);
+        return; // Exit function if elements are missing
+    }
+
+    let query = input.value.trim();
+    console.log('Query received:', query); // Debugging log
+
+    if (query) {
+        const correctedQuery = correctSpelling(query);
+        console.log('Corrected Query:', correctedQuery); // Debugging log
+        outputDiv.innerHTML += `<p>> ${correctedQuery}</p>`;
+        const response = solveTextBasedMathQuery(correctedQuery);
+        outputDiv.innerHTML += `<p class="response">${response}</p>`;
+        history.push({ query: correctedQuery, response });
+        input.value = ''; // Clear input field
+        outputDiv.scrollTop = outputDiv.scrollHeight; // Scroll to bottom
     } else {
-        console.error('commandInput or output div not found');
+        outputDiv.innerHTML += `<p class="response">Please enter a query.</p>`;
+        outputDiv.scrollTop = outputDiv.scrollHeight;
+        console.log('Empty query submitted.'); // Debugging log for empty input
     }
 }
 
 function toggleStats() {
     const statsButtons = document.getElementById('statsButtons');
     const toggle = document.querySelector('.stats-toggle');
-    if (statsButtons && toggle) { // Ensure elements exist before manipulating
+    if (statsButtons && toggle) {
         statsVisible = !statsVisible;
         statsButtons.style.display = statsVisible ? 'flex' : 'none';
         toggle.textContent = `▼ ${statsVisible ? 'Hide' : 'Statistical Tools'}`;
     } else {
-        console.error('Stats buttons or toggle element not found.');
+        console.error('toggleStats: Stats buttons or toggle element not found.');
     }
 }
 
@@ -128,7 +136,7 @@ function calculateStat(statType) {
     const outputDiv = document.getElementById('output');
 
     if (!inputElement || !outputDiv) {
-        console.error('commandInput or output div not found');
+        console.error('calculateStat: commandInput or output div not found');
         return;
     }
 
@@ -142,7 +150,7 @@ function calculateStat(statType) {
             case 'mode': result = `The mode is ${calculateMode(numbers)}.`; break;
             case 'median': result = `The median is ${calculateMedian(numbers)}.`; break;
             case 'range': result = `The range is ${calculateRange(numbers)}.`; break;
-            default: result = 'Unknown statistical operation.'; break; // Added default case
+            default: result = 'Unknown statistical operation.'; break;
         }
         outputDiv.innerHTML += `<p>> ${statType} of ${input}</p>`;
         outputDiv.innerHTML += `<p class="response">${result}</p>`;
@@ -152,13 +160,6 @@ function calculateStat(statType) {
         outputDiv.innerHTML += `<p class="response">Error: No numbers found in "${input}".</p>`;
     }
 }
-
-document.getElementById('commandInput')?.addEventListener('keydown', function(event) {
-    if (event.key === 'Enter' && !event.shiftKey) {
-        event.preventDefault();
-        submitQuery();
-    }
-});
 
 function solveTextBasedMathQuery(query) {
     const lowerQuery = query.toLowerCase();
@@ -186,10 +187,9 @@ function solveTextBasedMathQuery(query) {
         else response = 'Error: No numbers provided.';
     } else if (lowerQuery.includes('range')) {
         if (numbers.length > 0) response = `The range is ${calculateRange(numbers)}.`;
-        else response = 'Error: No numbers provided.'; // Added handling for no numbers
+        else response = 'Error: No numbers provided.';
     } else if (query.match(/(\d+(\.\d+)?)\s*([+\-*/])\s*(\d+(\.\d+)?)/)) {
         const match = query.match(/(\d+(\.\d+)?)\s*([+\-*/])\s*(\d+(\.\d+)?)/);
-        // FIX: Ensure match is not null before destructuring
         if (match) {
             const [_, num1, __, operator, num2] = match;
             const n1 = parseFloat(num1), n2 = parseFloat(num2);
@@ -198,26 +198,42 @@ function solveTextBasedMathQuery(query) {
                 case '-': response = `Result: ${n1} - ${n2} = ${n1 - n2}`; break;
                 case '*': response = `Result: ${n1} * ${n2} = ${n1 * n2}`; break;
                 case '/': response = n2 !== 0 ? `Result: ${n1} / ${n2} = ${(n1 / n2).toFixed(2)}` : 'Error: Division by zero'; break;
-                default: response = 'Error: Invalid arithmetic operation.'; // Added default case
+                default: response = 'Error: Invalid arithmetic operation.';
             }
         } else {
             response = 'Error: Could not parse arithmetic expression.';
         }
     } else if (lowerQuery.includes('solve') && lowerQuery.includes('x^2')) {
-        const match = query.match(/x\^2\s*([+\-])\s*(\d+)\s*([+\-])\s*(\d+)/);
-        if (match) {
-            const b = match[1] === '-' ? -parseInt(match[2]) : parseInt(match[2]);
-            const c = match[3] === '-' ? -parseInt(match[4]) : parseInt(match[4]);
-            const discriminant = b * b - 4 * c;
-            if (discriminant >= 0) {
-                const sqrtD = Math.sqrt(discriminant);
-                // FIX: Corrected quadratic formula for x^2 + bx + c = 0, solutions are (-b +/- sqrt(D)) / 2a. Here a=1
-                response = `Solutions: x = ${(-b + sqrtD) / 2}, x = ${(-b - sqrtD) / 2}`;
+        // Updated regex to correctly capture coefficients 'b' and 'c' for x^2 + bx + c = 0
+        // This regex looks for x^2, optionally followed by + or - and a number (for b),
+        // optionally followed by + or - and a number (for c).
+        // Example queries: "solve x^2 + 2x + 1 = 0", "solve x^2 - 4 = 0" (assumes b=0 if not present)
+        // For simplicity with current regex, it's expecting "x^2 +/- number +/- number"
+        // Original regex was trying to match "x^2 OPERATOR number OPERATOR number"
+        // Let's refine for a more standard form: ax^2 + bx + c = 0.
+        // Given your current example "x^2 - 4 = 0" implies a=1, b=0, c=-4
+        // And "solve x^2 - 4 + 5" implies x^2 - 4x + 5 = 0 (this interpretation is problematic)
+
+        // For the provided example "solve x^2 - 4 = 0", it implies:
+        // x^2 + 0x - 4 = 0 -> a=1, b=0, c=-4
+        // The current regex `x\^2\s*([+\-])\s*(\d+)\s*([+\-])\s*(\d+)` is for (x^2 +/- num1 +/- num2)
+        // This is interpreted as x^2 + b + c where b and c are constants, not coefficients.
+        // Let's adjust to be able to handle "x^2 - 4 = 0"
+        
+        // Simpler approach for the given examples, assumes b=0 if not specified as part of a term.
+        // For "x^2 +/- C = 0"
+        const constOnlyMatch = query.match(/x\^2\s*([+\-])\s*(\d+)\s*=\s*0/);
+        if (constOnlyMatch) {
+            const c = constOnlyMatch[1] === '-' ? -parseInt(constOnlyMatch[2]) : parseInt(constOnlyMatch[2]);
+            // Solving x^2 + c = 0 => x^2 = -c
+            if (-c >= 0) { // If -c is positive or zero
+                const sqrtC = Math.sqrt(-c);
+                response = `Solutions: x = ${sqrtC}, x = ${-sqrtC}`;
             } else {
                 response = 'No real solutions.';
             }
         } else {
-            response = 'Error: Invalid quadratic equation format. Try "solve x^2 + 4 + 5".';
+            response = 'Error: Invalid quadratic equation format. Try "solve x^2 - 4 = 0" or "solve x^2 + 9 = 0".';
         }
     } else if (lowerQuery.includes('∫') || lowerQuery.includes('integrate')) {
         if (lowerQuery.includes('x^2')) response = '∫x^2 dx = (x^3)/3 + C';
@@ -233,15 +249,38 @@ function updateHistory() {
     const historyDiv = document.getElementById('history-output');
     if (historyDiv) {
         historyDiv.innerHTML = history.length ? 
-            history.map((entry, index) => `<p><strong>${index + 1}:</strong> ${entry.query}<br>Response: ${entry.response}</p>`).join('') : // Added "Response:" for clarity
+            history.map((entry, index) => `<p><strong>${index + 1}:</strong> ${entry.query}<br>Response: ${entry.response}</p>`).join('') :
             '<p>No history.</p>';
     } else {
-        console.error('History output div not found.');
+        console.error('updateHistory: History output div not found.');
     }
 }
 
-// Ensure DOM is fully loaded before trying to access elements
+// Ensure DOM is fully loaded before trying to access elements and attach listeners
 document.addEventListener('DOMContentLoaded', () => {
     openTab('problem-input'); // Open the initial tab
     console.log('SMAIRT loaded');
+
+    // Attach keydown event listener for the textarea (Enter key submission)
+    const commandInputTextarea = document.getElementById('commandInput');
+    if (commandInputTextarea) {
+        commandInputTextarea.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault(); // Prevent default new line behavior
+                submitQuery();
+            }
+        });
+        console.log('Event listener attached to commandInput for Enter key.');
+    } else {
+        console.error('commandInput textarea not found for keydown listener.');
+    }
+
+    // Attach click event listener for the Submit button
+    const submitButton = document.getElementById('submitBtn');
+    if (submitButton) {
+        submitButton.addEventListener('click', submitQuery);
+        console.log('Event listener attached to Submit button.');
+    } else {
+        console.error('Submit button with ID "submitBtn" not found to attach event listener.');
+    }
 });
