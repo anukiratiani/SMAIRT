@@ -1,6 +1,5 @@
 /* General Body Styles */
 body {
-    /* Enchanted background: A soft, linear gradient from a pale aqua to a mint green */
     background: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 100%); /* Pale Aqua to Mint Green */
     color: #4a5568; /* Soft, desaturated dark blue-grey for general text */
     font-family: 'Courier New', monospace;
@@ -15,11 +14,9 @@ body {
 .container {
     width: 90%;
     max-width: 900px;
-    /* Slightly transparent white background to hint at the enchanted body background */
     background-color: rgba(255, 255, 255, 0.95);
     border: 2px solid #b2ebf2; /* Pale aqua border */
     border-radius: 8px;
-    /* Enchanted glow effect */
     box-shadow: 0 0 25px rgba(178, 235, 242, 0.7); /* Soft aqua glow */
     overflow: hidden;
 }
@@ -32,7 +29,6 @@ body {
     font-size: 1.5em;
     text-align: center;
     font-weight: bold;
-    /* Subtle text shadow for a glowing effect */
     text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
 }
 
@@ -117,7 +113,6 @@ body {
 .output p.response {
     color: #2e7d32; /* A slightly darker green for responses, for better readability */
 }
-
 
 .input-line {
     display: flex;
@@ -219,6 +214,31 @@ body {
     background-color: #80deea; /* More saturated aqua on hover */
     color: #263238; /* Darker text on hover */
     border-color: #4dd0e1; /* Darker aqua border on hover */
+}
+
+/* --- New CSS for Visual Fractions --- */
+.fraction-container {
+    display: inline-block;
+    vertical-align: middle; /* Align with text baseline */
+    text-align: center;
+    line-height: 1.2; /* Adjust line height for better spacing */
+    white-space: nowrap; /* Prevent line breaks within fraction */
+    margin: 0 4px; /* Small margin around fraction */
+}
+
+.fraction-numerator,
+.fraction-denominator {
+    display: block;
+}
+
+.fraction-line {
+    display: block;
+    border-bottom: 1px solid #4a5568; /* Use your text color */
+    width: 100%; /* Spans full width */
+    margin: 0 auto; /* Center the line */
+    height: 1px; /* Minimal height for the line itself */
+    padding-top: 2px; /* Small space above line */
+    padding-bottom: 2px; /* Small space below line */
 }
 
 /* Responsive Adjustments */
