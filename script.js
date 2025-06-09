@@ -176,148 +176,146 @@ function calculateDerivative(expression) {
 }
 
 function solveLinearEquation(query) {
-    // Expected formats: "solve ax + b = c", "solve ax = c", "solve ax + b = 0" etc.
-    // Making coefficients optional for terms like "x" instead of "1x"
-    // Regex: (sign? coefficient? x) (sign? constant) = (constant)
-    const match = query.match(/solve\s*([-+]?\s*\d*\.?\d*)\s*x\s*([-+]?\s*\d*\.?\d*)?\s*=\s*([-+]?\s*\d*\.?\d*)/i);
+    // Remove 'solve' prefix if present for internal parsing
+    const cleanedQuery = query.toLowerCase().replace(/^solve\s*/, '');
+    const parts = cleanedQuery.split('=');
 
-    if (match) {
-        let a = parseFloat(match[1].replace(/\s/g, '') || (match[1].includes('-') ? '-1' : '1'));
-        if (isNaN(a)) a = 1; // Default to 1 if coefficient is just 'x' or '+x'
-        if (match[1].trim() === '-') a = -1; // Specific for '-x'
-
-        let b = parseFloat(match[2]?.replace(/\s/g, '')) || 0;
-        let c = parseFloat(match[3].replace(/\s/g, '')) || 0;
-
-        // Adjust b if it's part of the left side (ax + b) vs (ax - b)
-        // match[2] captures " + 5" or " - 3" or ""
-        const bSign = match[2]?.trim().charAt(0);
-        if (bSign === '-') {
-            b = -Math.abs(b); // Ensure 'b' takes its correct sign
-        }
-
-        // Equation is ax + b = c => ax = c - b => x = (c - b) / a
-        const numerator = c - b;
-        const denominator = a;
-
-        if (denominator === 0) {
-            if (numerator === 0) {
-                return 'Infinite solutions (0 = 0).';
-            } else {
-                return 'No solution (e.g., 0 = 5).';
-            }
-        }
-        return `Solution: x = ${formatFraction(numerator, denominator)}`;
-
-    } else {
-        return 'Error: Invalid linear equation format. Try "solve 2x + 5 = 15" or "solve 3x = 9".';
+    if (parts.length !== 2) {
+        return 'Error: Invalid linear equation format. Ensure there is one equals sign.';
     }
+
+    let leftSide = parts[0].trim();
+    let rightSide = parts[1].trim();
+
+    // Parse left side into ax + C_L
+    let a = 0; // coefficient of x
+    let constantLeft = 0;
+
+    // Try to extract the 'x' term (e.g., "2x", "x", "-5x")
+    const xTermMatch = leftSide.match(/([-+]?\s*\d*\.?\d*)?\s*x/i);
+    if (xTermMatch) {
+        const coeffStr = xTermMatch[1]?.replace(/\s/g, '') || '';
+        if (coeffStr === '' || coeffStr === '+') a = 1;
+        else if (coeffStr === '-') a = -1;
+        else a = parseFloat(coeffStr);
+        
+        // Remove the 'x' term from the leftSide string to process remaining constant
+        leftSide = leftSide.replace(xTermMatch[0], '').trim();
+    }
+    
+    // Parse any remaining constant on the left side
+    // This handles cases like "x+5" (x is parsed, +5 is constant)
+    // or "5" (if it's a constant equation like 5=5)
+    if (leftSide !== '') {
+        // Handle standalone signs like "+5" or "-3"
+        if (leftSide.startsWith('+')) {
+            constantLeft += parseFloat(leftSide.substring(1).replace(/\s/g, '')) || 0;
+        } else if (leftSide.startsWith('-')) {
+            constantLeft -= parseFloat(leftSide.substring(1).replace(/\s/g, '')) || 0;
+        } else {
+            constantLeft += parseFloat(leftSide.replace(/\s/g, '')) || 0;
+        }
+    }
+
+    // Parse right side constant
+    let constantRight = parseFloat(rightSide.replace(/\s/g, '')) || 0;
+    if (isNaN(constantRight)) constantRight = 0; // In case right side is empty or malformed
+
+    // Form: ax + (constantLeft - constantRight) = 0
+    let finalConstant = constantLeft - constantRight;
+
+    if (a === 0) {
+        if (finalConstant === 0) {
+            return 'Infinite solutions (e.g., 0 = 0).';
+        } else {
+            return 'No solution (e.g., 0 = 5).';
+        }
+    }
+    
+    const numerator = -finalConstant;
+    const denominator = a;
+
+    return `Solution: x = ${formatFraction(numerator, denominator)}`;
 }
+
 
 function solveQuadraticEquation(query) {
     // Match ax^2 + bx + c = 0. Coefficients a, b, c can be implied 1, -1, or 0.
     // Handles forms like: "x^2+3x+2=0", "2x^2-x=0", "x^2-4=0", "-x^2+2x-1=0"
-    const quadraticMatch = query.match(
-        /solve\s*([-+]?\s*\d*\.?\d*)?\s*x\^2\s*([-+]?\s*\d*\.?\d*)?\s*x?\s*([-+]?\s*\d*\.?\d*)?\s*=\s*0/i
-    );
+    const cleanedQuery = query.toLowerCase().replace(/^solve\s*/, '');
+    const eqParts = cleanedQuery.split('=');
 
-    if (quadraticMatch) {
-        let a = 0, b = 0, c = 0;
+    if (eqParts.length !== 2 || eqParts[1].trim() !== '0') {
+        // For simplicity, require the right side to be 0 for quadratic solver
+        return 'Error: Quadratic equations must be in the form ax^2 + bx + c = 0.';
+    }
 
-        // Parsing 'a' (coefficient of x^2)
-        const aStr = quadraticMatch[1]?.replace(/\s/g, '').toLowerCase() || '';
-        if (aStr === '' || aStr === '+') a = 1;
-        else if (aStr === '-') a = -1;
-        else a = parseFloat(aStr);
-        if (isNaN(a)) a = 1; // Fallback for pure "x^2"
+    const expression = eqParts[0].trim();
+    let a = 0, b = 0, c = 0;
+    let currentTerm = '';
+    let currentSign = 1;
 
+    // Split by operators, keeping the operators
+    const terms = expression.split(/([+-])/).filter(Boolean);
 
-        // Parsing 'b' (coefficient of x)
-        const bStr = quadraticMatch[2]?.replace(/\s/g, '').toLowerCase() || '';
-        if (bStr.includes('x')) { // Means it's part of an 'x' term
-            const val = bStr.replace('x', '');
-            if (val === '' || val === '+') b = 1;
-            else if (val === '-') b = -1;
-            else b = parseFloat(val);
-        } else if (bStr !== '') { // Could be a constant term if not followed by 'x'
-             // If not an x term, it's c
-             c = parseFloat(bStr);
+    for (let i = 0; i < terms.length; i++) {
+        let term = terms[i].trim();
+
+        if (term === '+' || term === '-') {
+            currentSign = (term === '+') ? 1 : -1;
+            continue;
         }
 
-        // Parsing 'c' (constant term)
-        const cStr = quadraticMatch[3]?.replace(/\s/g, '').toLowerCase() || '';
-        if (cStr !== '') {
-            c = parseFloat(cStr);
+        if (term.includes('x^2')) {
+            const valStr = term.replace('x^2', '').trim();
+            if (valStr === '') a = 1 * currentSign;
+            else if (valStr === '-') a = -1 * currentSign;
+            else a = parseFloat(valStr) * currentSign;
+        } else if (term.includes('x')) {
+            const valStr = term.replace('x', '').trim();
+            if (valStr === '') b = 1 * currentSign;
+            else if (valStr === '-') b = -1 * currentSign;
+            else b = parseFloat(valStr) * currentSign;
+        } else { // Constant term
+            c = parseFloat(term) * currentSign;
         }
-
-
-        // Re-evaluate b and c based on common patterns after initial parse
-        // This makes parsing more robust for various missing terms.
-        const parts = query.toLowerCase().replace(/solve\s*/, '').replace(/=0/, '').split(/(\s*[-+]\s*)/).filter(Boolean);
-        a = 0; b = 0; c = 0;
-        let currentSign = 1;
-
-        for (let i = 0; i < parts.length; i++) {
-            let part = parts[i].trim();
-            if (part === '+' || part === '-') {
-                currentSign = (part === '+') ? 1 : -1;
-                continue;
-            }
-
-            if (part.includes('x^2')) {
-                const val = part.replace('x^2', '');
-                a = (val === '' || val === '+') ? 1 : (val === '-' ? -1 : parseFloat(val));
-                if (isNaN(a)) a = 1; // For cases like 'x^2'
-                a *= currentSign;
-            } else if (part.includes('x')) {
-                const val = part.replace('x', '');
-                b = (val === '' || val === '+') ? 1 : (val === '-' ? -1 : parseFloat(val));
-                if (isNaN(b)) b = 1; // For cases like 'x'
-                b *= currentSign;
-            } else {
-                c = parseFloat(part);
-                c *= currentSign;
-            }
-            currentSign = 1; // Reset sign for next term
-        }
+        currentSign = 1; // Reset sign for next term
+    }
         
-        if (a === 0) {
-            // If 'a' is 0, it's not a quadratic equation (it's linear or constant)
-            return solveLinearEquation(query); // Delegate to linear solver
-        }
+    if (a === 0) {
+        // If 'a' is 0, it's not a quadratic equation (it's linear or constant)
+        return solveLinearEquation(query); // Delegate to linear solver
+    }
 
-        const discriminant = b * b - 4 * a * c;
+    const discriminant = b * b - 4 * a * c;
 
-        if (discriminant >= 0) {
-            const sqrtD = Math.sqrt(discriminant);
-            const x1_num = -b + sqrtD;
-            const x1_den = 2 * a;
-            const x2_num = -b - sqrtD;
-            const x2_den = 2 * a;
+    if (discriminant >= 0) {
+        const sqrtD = Math.sqrt(discriminant);
+        const x1_num = -b + sqrtD;
+        const x1_den = 2 * a;
+        const x2_num = -b - sqrtD;
+        const x2_den = 2 * a;
 
-            const x1 = formatFraction(x1_num, x1_den);
-            const x2 = formatFraction(x2_num, x2_den);
+        const x1 = formatFraction(x1_num, x1_den);
+        const x2 = formatFraction(x2_num, x2_den);
 
-            if (x1 === x2) {
-                return `Solution: x = ${x1}`;
-            } else {
-                return `Solutions: x₁ = ${x1}, x₂ = ${x2}`;
-            }
+        if (x1 === x2) {
+            return `Solution: x = ${x1}`;
         } else {
-            // Complex solutions
-            const sqrtNegD = Math.sqrt(Math.abs(discriminant));
-            const realPartNum = -b;
-            const realPartDen = 2 * a;
-            const imagPartNum = sqrtNegD;
-            const imagPartDen = 2 * a;
-
-            const realPart = formatFraction(realPartNum, realPartDen);
-            const imagPart = formatFraction(imagPartNum, imagPartDen);
-
-            return `Solutions: x₁ = ${realPart} + ${imagPart}i, x₂ = ${realPart} - ${imagPart}i`;
+            return `Solutions: x₁ = ${x1}, x₂ = ${x2}`;
         }
     } else {
-        return 'Error: Invalid quadratic equation format. Try "solve x^2 - 4x + 4 = 0" or "solve 2x^2 + 8 = 0".';
+        // Complex solutions
+        const sqrtNegD = Math.sqrt(Math.abs(discriminant));
+        const realPartNum = -b;
+        const realPartDen = 2 * a;
+        const imagPartNum = sqrtNegD;
+        const imagPartDen = 2 * a;
+
+        const realPart = formatFraction(realPartNum, realPartDen);
+        const imagPart = formatFraction(imagPartNum, imagPartDen);
+
+        return `Solutions: x₁ = ${realPart} + ${imagPart}i, x₂ = ${realPart} - ${imagPart}i`;
     }
 }
 
@@ -463,32 +461,44 @@ function solveTextBasedMathQuery(query) {
     const numbers = extractNumbers(query);
     let response = '';
 
-    // --- Order of checks matters: More specific patterns first ---
+    // Step 1: Preprocess for equations that don't start with "solve"
+    // Check if it looks like an equation (contains 'x' and '=')
+    const hasX = lowerQuery.includes('x');
+    const hasEquals = lowerQuery.includes('=');
+    const looksLikeEquation = hasX && hasEquals;
 
-    // Derivatives
-    const derivativeMatch = lowerQuery.match(/(?:d\/dx|derivative of)\s*(.+)/);
+    let processedQuery = lowerQuery;
+    if (looksLikeEquation && !lowerQuery.startsWith('solve')) {
+        processedQuery = 'solve ' + lowerQuery;
+    }
+
+    // Use processedQuery for subsequent checks
+    
+    // Derivatives (e.g., "d/dx x^2")
+    const derivativeMatch = processedQuery.match(/(?:d\/dx|derivative of)\s*(.+)/);
     if (derivativeMatch) {
         const expression = derivativeMatch[1].trim();
         response = `Derivative of ${expression}: ${calculateDerivative(expression)}`;
         return response;
     }
 
-    // Linear Equation Solver (e.g., "solve 2x + 4 = 10")
-    if (lowerQuery.startsWith('solve') && lowerQuery.includes('x') && !lowerQuery.includes('x^2')) {
-        response = solveLinearEquation(lowerQuery);
+    // Quadratic Equation Solver (check for 'x^2' first as it's more specific than just 'x')
+    if (processedQuery.includes('solve') && processedQuery.includes('x^2')) {
+        response = solveQuadraticEquation(processedQuery);
         return response;
     }
 
-    // Quadratic Equation Solver (e.g., "solve x^2 - 4x + 4 = 0")
-    if (lowerQuery.includes('solve') && lowerQuery.includes('x^2')) {
-        response = solveQuadraticEquation(lowerQuery);
+    // Linear Equation Solver (if it starts with 'solve', has 'x', and isn't quadratic)
+    // This will now catch "solve 2x+9=17" as well as "2x+9=17" due to preprocessing
+    if (processedQuery.includes('solve') && processedQuery.includes('x')) {
+        response = solveLinearEquation(processedQuery);
         return response;
     }
 
     // Function Evaluation (e.g., "evaluate x^2 + 3x for x = 5")
-    const evaluateMatch = lowerQuery.match(/evaluate\s*(.+)\s*for\s*x\s*=\s*(-?\d+(\.\d+)?)/);
+    const evaluateMatch = processedQuery.match(/evaluate\s*(.+)\s*for\s*x\s*=\s*(-?\d+(\.\d+)?)/);
     if (evaluateMatch) {
-        response = evaluateFunction(lowerQuery);
+        response = evaluateFunction(processedQuery);
         return response;
     }
 
