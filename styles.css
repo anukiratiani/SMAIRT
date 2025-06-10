@@ -1,16 +1,24 @@
 :root {
-    --primary-bg: #f8f8f8;
-    --secondary-bg: #e0e0e0;
-    --accent-color: #4CAF50; /* A fresh green */
-    --text-color: #333;
-    --border-color: #ccc;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-    --header-bg: #2196F3; /* A vibrant blue */
-    --header-text: #fff;
-    --output-bg-user: #e9f7ea; /* Light green for user input */
-    --output-bg-smairt: #f0f8ff; /* Light blue for SMAIRT response */
-    --tab-active-bg: #fff;
-    --tab-inactive-bg: #e0e0e0;
+    --primary-bg: #2c3e50; /* Dark Navy */
+    --secondary-bg: #34495e; /* Slightly lighter dark navy */
+    --accent-color: #FFD700; /* Bright Gold */
+    --accent-hover: #f1c40f; /* Slightly darker gold for hover */
+    --text-color-primary: #fff; /* White text on dark background */
+    --text-color-secondary: #ddd; /* Slightly lighter text */
+    --border-color: #555; /* Darker border */
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    --header-bg: rgba(0, 0, 0, 0.1); /* Subtle dark overlay on primary */
+    --header-text: var(--accent-color); /* Gold header text */
+    --output-bg: #222; /* Dark output background */
+    --input-bg: #333; /* Dark input background */
+    --input-text: var(--text-color-primary);
+    --tab-active-bg: var(--accent-color);
+    --tab-active-text: var(--primary-bg);
+    --tab-inactive-bg: var(--secondary-bg);
+    --tab-inactive-text: var(--text-color-secondary);
+    --button-bg: var(--accent-color);
+    --button-text: var(--primary-bg);
+    --button-hover-bg: var(--accent-hover);
 }
 
 body {
@@ -20,42 +28,44 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background: linear-gradient(to bottom right, var(--primary-bg), var(--secondary-bg));
-    color: var(--text-color);
+    background-color: var(--primary-bg);
+    color: var(--text-color-primary);
     line-height: 1.6;
-    overflow-y: scroll; /* Allow scrolling for long content */
+    overflow-y: scroll;
 }
 
 .main-header {
     background-color: var(--header-bg);
     color: var(--header-text);
-    padding: 1rem 0;
+    padding: 1.5rem 0;
     text-align: center;
-    box-shadow: 0 2px 5px var(--shadow-color);
-    margin-bottom: 20px;
+    box-shadow: 0 2px 10px var(--shadow-color);
+    margin-bottom: 30px;
 }
 
 .main-header h1 {
     margin: 0;
-    font-size: 2.5rem;
+    font-size: 3rem;
     font-weight: 700;
+    text-shadow: 1px 1px 2px var(--shadow-color);
 }
 
 .main-header p {
-    margin: 5px 0 0;
-    font-size: 1rem;
+    margin: 10px 0 0;
+    font-size: 1.2rem;
     font-weight: 300;
-    opacity: 0.9;
+    opacity: 0.8;
+    color: var(--text-color-secondary);
 }
 
 .container {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px var(--shadow-color);
-    padding: 25px;
+    background-color: var(--secondary-bg);
+    border-radius: 15px;
+    box-shadow: 0 6px 20px var(--shadow-color);
+    padding: 30px;
     width: 90%;
-    max-width: 800px;
-    margin: 20px auto;
+    max-width: 960px; /* Increased max width for better proportions */
+    margin: 30px auto;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
@@ -64,233 +74,65 @@ body {
 .tabs {
     display: flex;
     justify-content: flex-start;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     border-bottom: 2px solid var(--border-color);
 }
 
 .tab {
     background-color: var(--tab-inactive-bg);
     border: none;
-    padding: 12px 20px;
+    padding: 15px 25px;
     cursor: pointer;
-    font-size: 1rem;
+    font-size: 1.1rem;
     font-weight: 500;
-    color: var(--text-color);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    color: var(--tab-inactive-text);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
     transition: background-color 0.3s ease, color 0.3s ease;
-    margin-right: 5px; /* Space between tabs */
+    margin-right: 8px;
 }
 
 .tab:hover {
-    background-color: var(--secondary-bg);
+    background-color: #2a3a48; /* Darken for hover effect */
 }
 
 .tab.active {
     background-color: var(--tab-active-bg);
-    color: var(--header-bg);
-    border-bottom: 2px solid var(--header-bg); /* Highlight active tab */
+    color: var(--tab-active-text);
+    border-bottom: 2px solid var(--tab-active-bg); /* Match bottom border */
     font-weight: 700;
 }
 
 .tab-content {
     display: none;
     flex-grow: 1;
-    padding: 15px 0;
-    /* Removed padding inside for output/input areas to manage their own padding */
+    padding: 20px 0;
 }
 
 #problem-input {
-    display: flex; /* Make it a flex container to push input to bottom */
+    display: flex;
     flex-direction: column;
     flex-grow: 1;
 }
 
 .output {
-    background-color: var(--secondary-bg);
+    background-color: var(--output-bg);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 15px;
-    min-height: 200px;
-    max-height: 400px; /* Limit height and allow scrolling */
+    border-radius: 10px;
+    padding: 20px;
+    min-height: 250px;
+    max-height: 500px;
     overflow-y: auto;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     word-wrap: break-word;
-    white-space: pre-wrap; /* Preserve whitespace and wrap text */
-    flex-grow: 1; /* Allow output to take available space */
+    white-space: pre-wrap;
+    flex-grow: 1;
     display: flex;
-    flex-direction: column; /* For proper stacking of p tags */
+    flex-direction: column;
 }
 
 .output p {
-    margin: 5px 0;
-    padding: 8px 12px;
-    border-radius: 6px;
-    background-color: #f0f0f0; /* Default neutral background */
-}
-
-.output p.user-query {
-    background-color: var(--output-bg-user); /* Distinct background for user queries */
-    font-weight: 600;
-    color: #2c5f2d; /* Darker green text */
-    align-self: flex-end; /* Align user queries to the right */
-    max-width: 80%; /* Limit width */
-}
-
-.output p.smairt-response {
-    background-color: var(--output-bg-smairt); /* Distinct background for SMAIRT responses */
-    color: #1e3f66; /* Darker blue text */
-    align-self: flex-start; /* Align SMAIRT responses to the left */
-    max-width: 80%; /* Limit width */
-}
-
-/* MathJax specific styling for fractions */
-.MathJax_Display {
-    margin: 0 !important; /* Override default MathJax margins if needed */
-}
-.MathJax {
-    font-size: 1.1em !important; /* Slightly larger math font */
-}
-
-
-.input-area {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    margin-top: auto; /* Pushes input area to the bottom of the problem-input tab */
-}
-
-#commandInput {
-    font-family: 'Source Code Pro', monospace; /* Monospace for code-like input */
-    border: 1px solid var(--border-color);
+    margin: 8px 0;
+    padding: 10px 15px;
     border-radius: 8px;
-    padding: 12px 15px;
-    font-size: 1rem;
-    resize: vertical;
-    min-height: 60px;
-    max-height: 150px;
-    width: calc(100% - 30px); /* Adjust for padding */
-    box-sizing: border-box; /* Include padding in width calculation */
-    outline: none;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-#commandInput:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); /* Soft focus ring */
-}
-
-.input-controls {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 15px;
-    gap: 10px; /* Space between buttons */
-}
-
-.submit-btn, .stats-toggle, .stats-buttons button {
-    background-color: var(--accent-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 20px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    flex-grow: 1; /* Allow buttons to grow */
-}
-
-.submit-btn:hover, .stats-toggle:hover, .stats-buttons button:hover {
-    background-color: #43A047; /* Darker green on hover */
-    transform: translateY(-2px); /* Slight lift effect */
-}
-
-.stats-toggle {
-    background-color: #607D8B; /* Darker blue-gray for toggle */
-}
-
-.stats-toggle:hover {
-    background-color: #546E7A;
-}
-
-.stats-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 15px;
-    justify-content: center;
-}
-
-.stats-buttons button {
-    background-color: #7986CB; /* Lighter blue for stats buttons */
-    flex-grow: 1;
-    min-width: 120px; /* Ensure buttons don't get too small */
-}
-
-.stats-buttons button:hover {
-    background-color: #5C6BC0;
-}
-
-#history-output, #help {
-    padding: 15px; /* Add padding here as tab-content no longer has it */
-}
-
-#history-output p, #help p, #help ul {
-    margin-bottom: 10px;
-}
-
-#help ul {
-    list-style-type: disc;
-    padding-left: 20px;
-}
-
-.main-footer {
-    text-align: center;
-    padding: 15px 0;
-    margin-top: 20px;
-    color: #666;
-    font-size: 0.9rem;
-    border-top: 1px solid var(--border-color);
-    background-color: var(--primary-bg);
-}
-
-.main-footer p {
-    margin-bottom: 5px;
-}
-
-.main-footer a {
-    color: #007BFF; /* Link color */
-    text-decoration: none;
-}
-
-.main-footer a:hover {
-    text-decoration: underline;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-    .container {
-        padding: 15px;
-        width: 95%;
-    }
-
-    .tab {
-        padding: 10px 15px;
-        font-size: 0.9rem;
-    }
-
-    .input-controls {
-        flex-direction: column;
-    }
-
-    .submit-btn, .stats-toggle {
-        width: 100%;
-        margin-bottom: 10px;
-    }
-}
-
-/* For MathJax output */
-.MathJax {
-    overflow-x: auto; /* Allow horizontal scrolling for wide formulas */
-    padding: 5px 0; /* Add some vertical padding */
-}
+    background-color:
