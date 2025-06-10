@@ -135,4 +135,177 @@ body {
     margin: 8px 0;
     padding: 10px 15px;
     border-radius: 8px;
-    background-color:
+    background-color: #333; /* Darker for contrast */
+}
+
+.output p.user-query {
+    background-color: #444;
+    color: #8fbc8f; /* Light green for user */
+    align-self: flex-end;
+    max-width: 80%;
+}
+
+.output p.smairt-response {
+    background-color: #282c34; /* Darker blue-gray for SMAIRT */
+    color: #d19a66; /* Light gold/beige for SMAIRT */
+    align-self: flex-start;
+    max-width: 80%;
+}
+
+.MathJax_Display {
+    margin: 0 !important;
+}
+
+.MathJax {
+    font-size: 1.2em !important;
+    color: var(--text-color-primary); /* Ensure MathJax also uses primary text color */
+}
+
+.input-area {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: auto;
+}
+
+#commandInput {
+    font-family: 'Source Code Pro', monospace;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 1.1rem;
+    resize: vertical;
+    min-height: 80px;
+    max-height: 200px;
+    width: calc(100% - 30px);
+    box-sizing: border-box;
+    outline: none;
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#commandInput:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3); /* Gold focus ring */
+}
+
+.input-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    gap: 15px;
+}
+
+.submit-btn, .stats-toggle, .stats-buttons button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    border-radius: 10px;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    flex-grow: 1;
+    text-shadow: 1px 1px 1px var(--shadow-color);
+}
+
+.submit-btn:hover, .stats-toggle:hover, .stats-buttons button:hover {
+    background-color: var(--button-hover-bg);
+    transform: translateY(-3px);
+}
+
+.stats-toggle {
+    background-color: #6c757d; /* A neutral dark gray for toggle */
+}
+
+.stats-toggle:hover {
+    background-color: #5a6167; /* Darken for hover effect */
+}
+
+.stats-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.stats-buttons button {
+    background-color: #555; /* Dark gray for stats buttons */
+    flex-grow: 0; /* Don't let them grow too much */
+    min-width: 120px;
+    color: var(--text-color-primary);
+}
+
+.stats-buttons button:hover {
+    background-color: #444; /* Darken for hover effect */
+}
+
+#history-output, #help {
+    padding: 20px;
+}
+
+#history-output p, #help p, #help ul {
+    margin-bottom: 12px;
+}
+
+#help ul {
+    list-style-type: disc;
+    padding-left: 25px;
+}
+
+.main-footer {
+    text-align: center;
+    padding: 20px 0;
+    margin-top: 30px;
+    color: var(--text-color-secondary);
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--primary-bg);
+}
+
+.main-footer p {
+    margin-bottom: 8px;
+}
+
+.main-footer a {
+    color: var(--accent-color);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.main-footer a:hover {
+    text-decoration: underline;
+    color: var(--accent-hover);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        width: 95%;
+        padding: 20px;
+        margin: 20px auto;
+    }
+
+    .tabs {
+        margin-bottom: 20px;
+    }
+
+    .tab {
+        padding: 12px 20px;
+        font-size: 1rem;
+        margin-right: 5px;
+    }
+
+    .input-controls {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .submit-btn, .stats-toggle {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
