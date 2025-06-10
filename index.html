@@ -3,109 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMAIRT - Smart Mathematics AI</title>
+    <title>SMAIRT - Smart AI Math & Inquiry Response Tool</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Source+Code+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']], // Define inline math delimiters
+                displayMath: [['$$', '$$'], ['\\[', '\\]']] // Define display math delimiters
+            },
+            startup: {
+                ready: () => {
+                    MathJax.startup.defaultReady();
+                }
+            }
+        };
+    </script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">SMAIRT: Smart Mathematics AI for Reasoning and Text</div>
+    <header class="main-header">
+        <h1>SMAIRT</h1>
+        <p>Smart AI Math & Inquiry Response Tool</p>
+    </header>
+
+    <main class="container">
         <div class="tabs">
-            <button class="tab active" onclick="openTab('problem-input')">Problem Input</button>
+            <button class="tab active" onclick="openTab('problem-input')">Problem Solver</button>
             <button class="tab" onclick="openTab('history')">History</button>
             <button class="tab" onclick="openTab('help')">Help</button>
         </div>
-        <div class="tab-content" id="problem-input">
-            <div class="symbol-table">
-                <button class="symbol-btn" onclick="insertSymbol('∫')">∫</button>
-                <button class="symbol-btn" onclick="insertSymbol('^2')">^2</button>
-                <button class="symbol-btn" onclick="insertSymbol('^')">^</button>
-                <button class="symbol-btn" onclick="insertSymbol('√')">√</button>
-                <button class="symbol-btn" onclick="insertSymbol('π')">π</button>
-                <button class="symbol-btn" onclick="insertSymbol('log')">log</button>
-                <button class="symbol-btn" onclick="insertSymbol('ln')">ln</button>
-                <button class="symbol-btn" onclick="insertSymbol('lg')">lg</button>
-                <button class="symbol-btn" onclick="insertSymbol('dx')">dx</button>
+
+        <div id="problem-input" class="tab-content active">
+            <div class="output" id="output">
+                <p class="response">Welcome to SMAIRT! How can I help you today?</p>
             </div>
-            <div class="terminal">
-                <div class="output" id="output"></div>
-                <div class="input-line">
-                    <span class="prompt">> </span>
-                    <textarea id="commandInput" placeholder="Enter a query (e.g., 'derivative of x^2', 'solve 2x + 4 = 10')" autofocus></textarea>
+            <div class="input-area">
+                <textarea id="commandInput" placeholder="Enter your math problem or query here..."></textarea>
+                <div class="input-controls">
                     <button class="submit-btn" id="submitBtn">Submit</button>
-                </div>
-                <div class="stats-toggle" onclick="toggleStats()">▼ Statistical Tools</div>
-                <div class="stats-buttons" id="statsButtons" style="display: none;">
-                    <button class="stat-btn" onclick="calculateStat('average')">Average</button>
-                    <button class="stat-btn" onclick="calculateStat('mode')">Mode</button>
-                    <button class="stat-btn" onclick="calculateStat('median')">Median</button>
-                    <button class="stat-btn" onclick="calculateStat('range')">Range</button>
-                    <!-- New Stat Buttons - will be handled by submitQuery for now -->
-                    <!-- <button class="stat-btn" onclick="calculateStat('stddev')">Std.Dev</button>
-                    <button class="stat-btn" onclick="calculateStat('variance')">Variance</button>
-                    <button class="stat-btn" onclick="calculateStat('combinations')">Combinations</button>
-                    <button class="stat-btn" onclick="calculateStat('permutations')">Permutations</button> -->
+                    <button class="stats-toggle" onclick="toggleStats()">▼ Statistical Tools</button>
                 </div>
             </div>
-        </div>
-        <div class="tab-content" id="history" style="display: none;">
-            <div class="history" id="history-output"></div>
-        </div>
-        <div class="tab-content" id="help" style="display: none;">
-            <div class="help-content">
-                <h2>Welcome to SMAIRT</h2>
-                <p>SMAIRT solves advanced mathematical and statistical queries interactively.</p>
-                <h3>How to Use</h3>
-                <ul>
-                    <li>Enter queries in the <strong>Problem Input</strong> tab (e.g., 'average of 4 and 6'), use symbols, then press <strong>Enter</strong> or click <strong>Submit</strong>.</li>
-                    <li>Click the ▼ arrow to access basic statistical buttons (Average, Mode, Median, Range).</li>
-                    <li>Click symbols (∫, ^2, √, π, log, ln, lg, dx) to insert them.</li>
-                    <li>View past queries in the <strong>History</strong> tab.</li>
-                    <li>Use Shift+Enter for new lines.</li>
-                </ul>
-                <h3>Examples of New Capabilities:</h3>
-                <ul>
-                    <li><strong>Basic Math:</strong> "5 + 3", "10 / 2"</li>
-                    <li><strong>Descriptive:</strong> "biggest two digit number", "largest of 1, 5, 20"</li>
-                    <li><strong>Derivatives:</strong>
-                        <ul>
-                            <li>"d/dx x^3"</li>
-                            <li>"derivative of sin(x)"</li>
-                            <li>"d/dx e^x"</li>
-                            <li>"derivative of ln(x)"</li>
-                        </ul>
-                    </li>
-                    <li><strong>Linear Equations:</strong> "solve 2x + 4 = 10", "solve 3x - 5 = 1", "solve x = 7"</li>
-                    <li><strong>Quadratic Equations:</strong> (Format: $ax^2 + bx + c = 0$)
-                        <ul>
-                            <li>"solve x^2 - 4x + 4 = 0"</li>
-                            <li>"solve x^2 + 9 = 0"</li>
-                            <li>"solve 2x^2 + 3x = 0"</li>
-                            <li>"solve x^2 - 1 = 0"</li>
-                        </ul>
-                    </li>
-                    <li><strong>Advanced Statistics:</strong>
-                        <ul>
-                            <li>"standard deviation of 10, 12, 14, 16"</li>
-                            <li>"variance of 5, 8, 10"</li>
-                            <li>"combinations of 5 choose 2"</li>
-                            <li>"permutations of 7 choose 3"</li>
-                        </ul>
-                    </li>
-                    <li><strong>Function Evaluation:</strong> "evaluate x^2 + 3x for x = 5"</li>
-                    <li><strong>Integrals:</strong>
-                        <ul>
-                            <li>"∫x^2 dx"</li>
-                            <li>"∫sin(x)cos(x) dx"</li>
-                            <li>"∫1/x dx"</li>
-                            <li>"∫e^x dx"</li>
-                            <li>"∫sin(x) dx"</li>
-                            <li>"∫dx"</li>
-                        </ul>
-                    </li>
-                </ul>
+            <div class="stats-buttons" id="statsButtons" style="display: none;">
+                <button onclick="calculateStat('average')">Average</button>
+                <button onclick="calculateStat('median')">Median</button>
+                <button onclick="calculateStat('mode')">Mode</button>
+                <button onclick="calculateStat('range')">Range</button>
             </div>
         </div>
-    </div>
+
+        <div id="history" class="tab-content">
+            <h2>Query History</h2>
+            <div id="history-output">
+                <p>No history yet.</p>
+            </div>
+        </div>
+
+        <div id="help" class="tab-content">
+            <h2>Help & Examples</h2>
+            <p>Here are some examples of commands SMAIRT can understand:</p>
+            <ul>
+                <li><strong>Arithmetic:</strong> `5 + 3`, `10 * 4`, `9 / 3`, `15 : 5`</li>
+                <li><strong>Linear Equations:</strong> `solve 2x + 9 = 17`, `5x - 1 = x + 7`, `x + 1/2 = 3/4`</li>
+                <li><strong>Quadratic Equations:</strong> `solve x^2 - 4x + 4 = 0`, `x^2 - 9 = 0`, `2x^2 + 5x = 3`</li>
+                <li><strong>Function Evaluation:</strong> `evaluate x^2 + 3x for x = 5`</li>
+                <li><strong>Derivatives:</strong> `d/dx x^2`, `derivative of sin(x)`</li>
+                <li><strong>Integrals:</strong> `∫x^2 dx`, `integrate 1/x dx`, `∫sin(x)cos(x) dx`</li>
+                <li><strong>Basic Statistics:</strong> `average of 10, 20, 30`, `median of 1, 5, 2, 8, 3`, `mode of 1, 2, 2, 3`</li>
+                <li><strong>Advanced Statistics:</strong> `standard deviation of 10, 12, 15, 13`, `combinations of 5 choose 2`</li>
+                <li><strong>Descriptive:</strong> `biggest two-digit number`</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <p>Created by Anuki</p>
+        <p><a href="https://www.linkedin.com/in/ani-ratiani-2286b2331" target="_blank" rel="noopener noreferrer">LinkedIn Profile</a></p>
+        <p><a href="mailto:ARatiani2@seu.edu.ge">ARatiani2@seu.edu.ge</a></p>
+        <p>&copy; 2025 SMAIRT. All rights reserved.</p>
+    </footer>
+
     <script src="script.js"></script>
 </body>
 </html>
