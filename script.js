@@ -25,7 +25,7 @@ function correctSpelling(text) {
     for (const wrong of sortedKeys) {
         const right = spellCheckDict[wrong];
         // Use word boundaries for single words, but not for phrases like 'two digited'
-        const regex = /\s/.test(wrong) ? new RegExp(wrong, 'gi') : new RegExp(`\\b${wrong}\\b`, 'gi');
+        const regex = /\s/.test(wrong) ? new RegExp(`\\b${wrong}\\b`, 'gi') : new RegExp(wrong, 'gi');
         corrected = corrected.replace(regex, right);
     }
     return corrected;
@@ -35,7 +35,7 @@ function extractNumbers(text) {
     return (text.match(/-?\d+(\.\d+)?/g) || []).map(Number);
 }
 
-// Helper for displaying fractions beautifully
+// Helper for displaying fractions in LaTeX format for MathJax
 function formatFraction(numerator, denominator) {
     if (denominator === 0) return "Error: Division by zero";
     if (numerator === 0) return "0";
@@ -49,31 +49,33 @@ function formatFraction(numerator, denominator) {
         return (numerator / denominator).toString();
     }
     
-    // Simplification of fraction using GCD for display
+    // Scale to handle up to 6 decimal places for precision during GCD calculation
+    const scaleFactor = 1000000;
+    const numScaled = Math.round(numerator * scaleFactor); 
+    const denScaled = Math.round(denominator * scaleFactor);
+
+    // Function to calculate Greatest Common Divisor
     const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
-    let common = gcd(Math.round(Math.abs(numerator * 1000)), Math.round(Math.abs(denominator * 1000))); // Multiply by 1000 to handle up to 3 decimal places for GCD
-
-    // Adjust for decimals after finding GCD, convert back to proper fractions
-    let simplifiedNum = numerator / (common / 1000);
-    let simplifiedDen = denominator / (common / 1000);
-
-    // If still decimals, convert to string for display without special formatting
-    if (simplifiedNum % 1 !== 0 || simplifiedDen % 1 !== 0) {
-        return (numerator / denominator).toFixed(4).toString(); // Fallback to decimal string
-    }
+    let common = gcd(Math.abs(numScaled), Math.abs(denScaled));
+    
+    let simplifiedNum = numScaled / common;
+    let simplifiedDen = denScaled / common;
 
     // Adjust sign if denominator is negative
     if (simplifiedDen < 0) {
         simplifiedNum = -simplifiedNum;
         simplifiedDen = -simplifiedDen;
     }
+    
+    // If after simplification it's still a float (due to initial scaling or non-exact fraction)
+    // or if the denominator is 1, return a simple number. Otherwise, return LaTeX fraction.
+    if (simplifiedDen === 1) {
+        return simplifiedNum.toString();
+    }
 
-    return `<span class="fraction-container">
-                <span class="fraction-numerator">${simplifiedNum}</span>
-                <span class="fraction-line"></span>
-                <span class="fraction-denominator">${simplifiedDen}</span>
-            </span>`;
+    return `\\frac{${simplifiedNum}}{${simplifiedDen}}`;
 }
+
 
 // Factorial helper for combinations/permutations
 function factorial(n) {
@@ -159,29 +161,29 @@ function calculateDerivative(expression) {
     const powerMatch = expression.match(/^x\^(\d+)$/);
     if (powerMatch) {
         const n = parseInt(powerMatch[1]);
-        if (n === 1) return '1';
-        if (n === 0) return '0';
-        return `${n}x^${n - 1}`;
+        if (n === 1) return '$1$';
+        if (n === 0) return '$0$';
+        return `$${n}x^{${n - 1}}$`;
     }
     // d/dx x
     if (expression === 'x') {
-        return '1';
+        return '$1$';
     }
     // d/dx sin(x)
     if (expression.includes('sin(x)')) {
-        return 'cos(x)';
+        return '$\\cos(x)$';
     }
     // d/dx cos(x)
     if (expression.includes('cos(x)')) {
-        return '-sin(x)';
+        return '$-\\sin(x)$';
     }
     // d/dx e^x
     if (expression.includes('e^x') || expression.includes('exp(x)')) {
-        return 'e^x';
+        return '$e^x$';
     }
     // d/dx ln(x)
     if (expression.includes('ln(x)')) {
-        return formatFraction(1, 'x');
+        return `$\\frac{1}{x}$`;
     }
 
     return 'Error: Only derivatives of x^n, sin(x), cos(x), e^x, and ln(x) are supported.';
@@ -272,16 +274,16 @@ function solveLinearEquation(query) {
 
     if (final_b === 0) {
         if (final_c === 0) {
-            return 'Infinite solutions (e.g., 0 = 0).';
+            return 'Infinite solutions (e.g., $0 = 0$).';
         } else {
-            return 'No solution (e.g., 0 = 5).';
+            return 'No solution (e.g., $0 = 5$).';
         }
     }
     
     const numerator = -final_c;
     const denominator = final_b;
 
-    return `Solution: x = ${formatFraction(numerator, denominator)}`;
+    return `Solution: $x = ${formatFraction(numerator, denominator)}$`;
 }
 
 
@@ -319,10 +321,11 @@ function solveQuadraticEquation(query) {
         const x1 = formatFraction(x1_num, x1_den);
         const x2 = formatFraction(x2_num, x2_den);
 
-        if (Math.abs(x1_num / x1_den - x2_num / x2_den) < 1e-9) { // Compare float values for equality
-            return `Solution: x = ${x1}`;
+        // Check if solutions are numerically very close (e.g., due to floating point error)
+        if (Math.abs((x1_num / x1_den) - (x2_num / x2_den)) < 1e-9) { 
+            return `Solution: $x = ${x1}$`;
         } else {
-            return `Solutions: x₁ = ${x1}, x₂ = ${x2}`;
+            return `Solutions: $x_1 = ${x1}, x_2 = ${x2}$`;
         }
     } else {
         // Complex solutions
@@ -335,7 +338,7 @@ function solveQuadraticEquation(query) {
         const realPart = formatFraction(realPartNum, realPartDen);
         const imagPart = formatFraction(imagPartNum, imagPartDen);
 
-        return `Solutions: x₁ = ${realPart} + ${imagPart}i, x₂ = ${realPart} - ${imagPart}i`;
+        return `Solutions: $x_1 = ${realPart} + ${imagPart}i, x_2 = ${realPart} - ${imagPart}i$`;
     }
 }
 
@@ -347,17 +350,11 @@ function evaluateFunction(query) {
         const xVal = parseFloat(match[3]);
 
         // Simple evaluation: replace 'x' with xVal
-        // This is highly simplified and vulnerable to complex expressions
-        // For security and robustness, real parsers use ASTs
         let result = expression.replace(/x/g, `(${xVal})`);
 
         try {
-            // WARNING: Using eval() is generally unsafe for untrusted user input.
-            // For a simple calculator like this, it might be acceptable, but be aware.
-            // A robust solution would involve parsing the expression into an Abstract Syntax Tree (AST)
-            // and evaluating it safely.
-            const evaluatedResult = eval(result);
-            return `Result: ${evaluatedResult}`;
+            const evaluatedResult = eval(result); // WARNING: Using eval()
+            return `Result: $${expression.replace(/x/g, xVal)} = ${evaluatedResult}$`;
         } catch (e) {
             console.error("Function evaluation error:", e);
             return 'Error: Could not evaluate the function. Please check the expression.';
@@ -389,7 +386,7 @@ function openTab(tabName) {
         buttons.forEach(tab => tab.classList.remove('active'));
         const selectedTab = document.getElementById(tabName);
         if (selectedTab) {
-            selectedTab.style.display = 'block';
+            selectedTab.style.display = 'flex'; // Use flex for column layout
             const activeButton = document.querySelector(`.tab[onclick="openTab('${tabName}')"]`);
             if (activeButton) {
                 activeButton.classList.add('active');
@@ -400,6 +397,9 @@ function openTab(tabName) {
             console.error(`openTab: Tab content with ID '${tabName}' not found.`);
         }
         if (tabName === 'history') updateHistory();
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise([document.getElementById(tabName)]).catch((err) => console.error('MathJax typesetting error:', err));
+        }
     } else {
         console.error('openTab: Tab elements not found (tabs or buttons).');
     }
@@ -421,14 +421,22 @@ function submitQuery() {
     if (query) {
         const correctedQuery = correctSpelling(query);
         console.log('Corrected Query:', correctedQuery);
-        outputDiv.innerHTML += `<p>> ${correctedQuery}</p>`;
+        outputDiv.innerHTML += `<p class="user-query">> ${correctedQuery}</p>`; // Added class for user queries
         const response = solveTextBasedMathQuery(correctedQuery);
-        outputDiv.innerHTML += `<p class="response">${response}</p>`;
+        outputDiv.innerHTML += `<p class="smairt-response">${response}</p>`; // Added class for SMAIRT responses
         history.push({ query: correctedQuery, response });
         input.value = '';
         outputDiv.scrollTop = outputDiv.scrollHeight;
+
+        // Trigger MathJax rendering for the newly added content
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise([outputDiv]).catch((err) => console.error('MathJax typesetting error:', err));
+        } else {
+            console.warn('MathJax not loaded.');
+        }
+
     } else {
-        outputDiv.innerHTML += `<p class="response">Please enter a query.</p>`;
+        outputDiv.innerHTML += `<p class="smairt-response">Please enter a query.</p>`;
         outputDiv.scrollTop = outputDiv.scrollHeight;
         console.log('Empty query submitted.');
     }
@@ -467,12 +475,15 @@ function calculateStat(statType) {
             case 'range': result = `The range is ${calculateRange(numbers)}.`; break;
             default: result = 'Unknown statistical operation. For advanced stats, type the query directly.'; break;
         }
-        outputDiv.innerHTML += `<p>> ${statType} of ${input}</p>`;
-        outputDiv.innerHTML += `<p class="response">${result}</p>`;
+        outputDiv.innerHTML += `<p class="user-query">> ${statType} of ${input}</p>`;
+        outputDiv.innerHTML += `<p class="smairt-response">${result}</p>`;
         history.push({ query: `${statType} of ${input}`, response: result });
         outputDiv.scrollTop = outputDiv.scrollHeight;
+        if (typeof MathJax !== 'undefined') {
+            MathJax.typesetPromise([outputDiv]).catch((err) => console.error('MathJax typesetting error:', err));
+        }
     } else {
-        outputDiv.innerHTML += `<p class="response">Error: No numbers found in "${input}".</p>`;
+        outputDiv.innerHTML += `<p class="smairt-response">Error: No numbers found in "${input}".</p>`;
     }
 }
 
@@ -498,7 +509,7 @@ function solveTextBasedMathQuery(query) {
     const derivativeMatch = processedQuery.match(/(?:d\/dx|derivative of)\s*(.+)/);
     if (derivativeMatch) {
         const expression = derivativeMatch[1].trim();
-        response = `Derivative of ${expression}: ${calculateDerivative(expression)}`;
+        response = `Derivative of $${expression}$: ${calculateDerivative(expression)}`;
         return response;
     }
 
@@ -551,9 +562,9 @@ function solveTextBasedMathQuery(query) {
         return response;
     }
 
-    // Basic Arithmetic Operations (e.g., "5 + 3")
-    if (query.match(/(\d+(\.\d+)?)\s*([+\-*/])\s*(\d+(\.\d+)?)/)) {
-        const match = query.match(/(\d+(\.\d+)?)\s*([+\-*/])\s*(\d+(\.\d+)?)/);
+    // Basic Arithmetic Operations (e.g., "5 + 3", "10 : 2")
+    if (query.match(/(\d+(\.\d+)?)\s*([+\-*/:])\s*(\d+(\.\d+)?)/)) { // Added ':' to regex
+        const match = query.match(/(\d+(\.\d+)?)\s*([+\-*/:])\s*(\d+(\.\d+)?)/);
         if (match) {
             const [_, num1, __, operator, num2] = match;
             const n1 = parseFloat(num1), n2 = parseFloat(num2);
@@ -562,13 +573,14 @@ function solveTextBasedMathQuery(query) {
                 case '+': result = n1 + n2; break;
                 case '-': result = n1 - n2; break;
                 case '*': result = n1 * n2; break;
-                case '/': 
+                case '/':
+                case ':': // Handle colon for division
                     if (n2 !== 0) result = formatFraction(n1, n2);
                     else result = 'Error: Division by zero';
                     break;
                 default: result = 'Error: Invalid arithmetic operation.'; break;
             }
-            response = `Result: ${n1} ${operator} ${n2} = ${result}`;
+            response = `Result: $${n1} ${operator === ':' ? '/' : operator} ${n2} = ${result}$`; // Format operator for MathJax
             return response;
         } else {
             response = 'Error: Could not parse arithmetic expression.';
@@ -613,26 +625,26 @@ function solveTextBasedMathQuery(query) {
     if (lowerQuery.includes('∫') || lowerQuery.includes('integrate')) {
         // More advanced specific integral (u-substitution example)
         if ((lowerQuery.includes('sin(x)') && lowerQuery.includes('cos(x)')) && lowerQuery.includes('dx')) {
-            response = '∫sin(x)cos(x) dx = ' + formatFraction(1,2) + '(sin(x))^2 + C (using u-substitution)';
+            response = '$\\int \\sin(x)\\cos(x) \\, dx = \\frac{1}{2}\\sin^2(x) + C$ (using u-substitution)';
         }
         // Basic integral formulas
         else if (lowerQuery.includes('x^2 dx')) {
-            response = '∫x^2 dx = ' + formatFraction(1,3) + 'x^3 + C';
+            response = '$\\int x^2 \\, dx = \\frac{1}{3}x^3 + C$';
         } else if (lowerQuery.includes('x dx')) {
-            response = '∫x dx = ' + formatFraction(1,2) + 'x^2 + C';
+            response = '$\\int x \\, dx = \\frac{1}{2}x^2 + C$';
         } else if (lowerQuery.includes('1/x dx')) {
-            response = '∫1/x dx = ln|x| + C';
+            response = '$\\int \\frac{1}{x} \\, dx = \\ln|x| + C$';
         } else if (lowerQuery.includes('e^x dx')) {
-            response = '∫e^x dx = e^x + C';
+            response = '$\\int e^x \\, dx = e^x + C$';
         } else if (lowerQuery.includes('sin(x) dx')) {
-            response = '∫sin(x) dx = -cos(x) + C';
+            response = '$\\int \\sin(x) \\, dx = -\\cos(x) + C$';
         } else if (lowerQuery.includes('cos(x) dx')) {
-            response = '∫cos(x) dx = sin(x) + C';
+            response = '$\\int \\cos(x) \\, dx = \\sin(x) + C$';
         } else if (lowerQuery.includes('1 dx') || lowerQuery.includes('dx')) {
-             response = '∫1 dx = x + C';
+             response = '$\\int 1 \\, dx = x + C$';
         }
         else {
-            response = 'Error: Specific integral forms are supported (e.g., ∫x^2 dx, ∫1/x dx, ∫sin(x) dx, ∫sin(x)cos(x) dx), but this one is not yet.';
+            response = 'Error: Specific integral forms are supported (e.g., $\\int x^2 \\, dx$, $\\int \\frac{1}{x} \\, dx$, $\\int \\sin(x) \\, dx$, $\\int \\sin(x)\\cos(x) \\, dx$), but this one is not yet.';
         }
         return response;
     }
@@ -648,6 +660,9 @@ function updateHistory() {
         historyDiv.innerHTML = history.length ? 
             history.map((entry, index) => `<p><strong>${index + 1}:</strong> ${entry.query}<br>Response: ${entry.response}</p>`).join('') :
             '<p>No history.</p>';
+        if (typeof MathJax !== 'undefined') { // Render math in history as well
+            MathJax.typesetPromise([historyDiv]).catch((err) => console.error('MathJax typesetting error:', err));
+        }
     } else {
         console.error('updateHistory: History output div not found.');
     }
