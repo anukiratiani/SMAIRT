@@ -1,250 +1,296 @@
-/* General Body Styles */
+:root {
+    --primary-bg: #f8f8f8;
+    --secondary-bg: #e0e0e0;
+    --accent-color: #4CAF50; /* A fresh green */
+    --text-color: #333;
+    --border-color: #ccc;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    --header-bg: #2196F3; /* A vibrant blue */
+    --header-text: #fff;
+    --output-bg-user: #e9f7ea; /* Light green for user input */
+    --output-bg-smairt: #f0f8ff; /* Light blue for SMAIRT response */
+    --tab-active-bg: #fff;
+    --tab-inactive-bg: #e0e0e0;
+}
+
 body {
-    background: linear-gradient(135deg, #e0f7fa 0%, #e8f5e9 100%); /* Pale Aqua to Mint Green */
-    color: #4a5568; /* Soft, desaturated dark blue-grey for general text */
-    font-family: 'Courier New', monospace;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
+    padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     min-height: 100vh;
+    background: linear-gradient(to bottom right, var(--primary-bg), var(--secondary-bg));
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-y: scroll; /* Allow scrolling for long content */
 }
 
-/* Main Container */
+.main-header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    margin-bottom: 20px;
+}
+
+.main-header h1 {
+    margin: 0;
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+.main-header p {
+    margin: 5px 0 0;
+    font-size: 1rem;
+    font-weight: 300;
+    opacity: 0.9;
+}
+
 .container {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px var(--shadow-color);
+    padding: 25px;
     width: 90%;
-    max-width: 900px;
-    background-color: rgba(255, 255, 255, 0.95);
-    border: 2px solid #b2ebf2; /* Pale aqua border */
-    border-radius: 8px;
-    box-shadow: 0 0 25px rgba(178, 235, 242, 0.7); /* Soft aqua glow */
-    overflow: hidden;
-}
-
-/* Header (SMAIRT Title) */
-.header {
-    background-color: #80deea; /* Slightly more saturated aqua for contrast */
-    color: #263238; /* Darker grey-blue for header text */
-    padding: 15px;
-    font-size: 1.5em;
-    text-align: center;
-    font-weight: bold;
-    text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
-}
-
-/* Tabs Navigation */
-.tabs {
-    display: flex;
-    border-bottom: 1px solid #80deea; /* Aqua border for tabs */
-}
-
-.tab {
-    flex: 1;
-    padding: 10px;
-    background-color: #e0f7fa; /* Light aqua background for inactive tabs */
-    color: #4a5568; /* Dark grey-blue text for inactive tabs */
-    border: none;
-    cursor: pointer;
-    text-align: center;
-    font-size: 1em;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.tab:hover {
-    background-color: #c0f2f7; /* Slightly darker aqua on hover */
-}
-
-.tab.active {
-    background-color: #80deea; /* Active tab is more saturated aqua */
-    color: #263238; /* Darker text for active tab */
-}
-
-/* Tab Content Areas (Problem Input, History, Help) */
-.tab-content {
-    padding: 20px;
-}
-
-/* Symbol Button Table */
-.symbol-table {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-}
-
-.symbol-btn {
-    background-color: #e0f7fa; /* Light aqua background for symbol buttons */
-    color: #4a5568; /* Dark grey-blue text */
-    border: 1px solid #80deea; /* Aqua border */
-    padding: 5px 10px;
-    cursor: pointer;
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    border-radius: 3px;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
-}
-
-.symbol-btn:hover {
-    background-color: #80deea; /* More saturated aqua on hover */
-    color: #263238; /* Darker text on hover */
-    border-color: #4dd0e1; /* Darker aqua border on hover */
-}
-
-/* Terminal Area (Output and Input) */
-.terminal {
-    background-color: #fcfcfc; /* Very light, almost white background for terminal */
-    border: 1px solid #b2ebf2; /* Pale aqua border for terminal */
-    border-radius: 5px;
-    height: 400px;
+    max-width: 800px;
+    margin: 20px auto;
+    flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 
-.output, .history {
-    flex-grow: 1;
-    padding: 10px;
-    overflow-y: auto;
-    color: #4a5568; /* General text color */
-    word-wrap: break-word; /* Ensure long responses wrap */
-}
-
-/* Custom response text color for output */
-.output p.response {
-    color: #2e7d32; /* A slightly darker green for responses, for better readability */
-}
-
-.input-line {
+.tabs {
     display: flex;
-    align-items: center;
-    padding: 10px;
-    border-top: 1px solid #e0f7fa; /* Lighter, softer border for input line */
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
 }
 
-.prompt {
-    margin-right: 10px;
-    color: #607d8b; /* Medium grey-blue for prompt */
+.tab {
+    background-color: var(--tab-inactive-bg);
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-color);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-right: 5px; /* Space between tabs */
+}
+
+.tab:hover {
+    background-color: var(--secondary-bg);
+}
+
+.tab.active {
+    background-color: var(--tab-active-bg);
+    color: var(--header-bg);
+    border-bottom: 2px solid var(--header-bg); /* Highlight active tab */
+    font-weight: 700;
+}
+
+.tab-content {
+    display: none;
+    flex-grow: 1;
+    padding: 15px 0;
+    /* Removed padding inside for output/input areas to manage their own padding */
+}
+
+#problem-input {
+    display: flex; /* Make it a flex container to push input to bottom */
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.output {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    min-height: 200px;
+    max-height: 400px; /* Limit height and allow scrolling */
+    overflow-y: auto;
+    margin-bottom: 20px;
+    word-wrap: break-word;
+    white-space: pre-wrap; /* Preserve whitespace and wrap text */
+    flex-grow: 1; /* Allow output to take available space */
+    display: flex;
+    flex-direction: column; /* For proper stacking of p tags */
+}
+
+.output p {
+    margin: 5px 0;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: #f0f0f0; /* Default neutral background */
+}
+
+.output p.user-query {
+    background-color: var(--output-bg-user); /* Distinct background for user queries */
+    font-weight: 600;
+    color: #2c5f2d; /* Darker green text */
+    align-self: flex-end; /* Align user queries to the right */
+    max-width: 80%; /* Limit width */
+}
+
+.output p.smairt-response {
+    background-color: var(--output-bg-smairt); /* Distinct background for SMAIRT responses */
+    color: #1e3f66; /* Darker blue text */
+    align-self: flex-start; /* Align SMAIRT responses to the left */
+    max-width: 80%; /* Limit width */
+}
+
+/* MathJax specific styling for fractions */
+.MathJax_Display {
+    margin: 0 !important; /* Override default MathJax margins if needed */
+}
+.MathJax {
+    font-size: 1.1em !important; /* Slightly larger math font */
+}
+
+
+.input-area {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: auto; /* Pushes input area to the bottom of the problem-input tab */
 }
 
 #commandInput {
-    background: none;
-    border: none;
-    color: #4a5568; /* Text color for input */
-    font-family: 'Courier New', monospace;
-    font-size: 16px;
-    flex-grow: 1;
+    font-family: 'Source Code Pro', monospace; /* Monospace for code-like input */
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    resize: vertical;
+    min-height: 60px;
+    max-height: 150px;
+    width: calc(100% - 30px); /* Adjust for padding */
+    box-sizing: border-box; /* Include padding in width calculation */
     outline: none;
-    resize: vertical; /* Allow vertical resizing only */
-    min-height: 30px; /* Minimum height for textarea */
-    height: 60px; /* Default height */
-    max-height: 150px; /* Max height to prevent it from taking too much space */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-#commandInput::placeholder {
-    color: #a7b2c5; /* Lighter grey-blue for placeholder */
+#commandInput:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2); /* Soft focus ring */
 }
 
-/* Submit Button */
-.submit-btn {
-    background-color: #80deea; /* Aqua background for submit button */
-    color: #263238; /* Darker text for submit button */
+.input-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    gap: 10px; /* Space between buttons */
+}
+
+.submit-btn, .stats-toggle, .stats-buttons button {
+    background-color: var(--accent-color);
+    color: white;
     border: none;
-    padding: 8px 15px;
-    margin-left: 10px;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 1rem;
     cursor: pointer;
-    font-family: 'Courier New', monospace;
-    border-radius: 3px;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    flex-grow: 1; /* Allow buttons to grow */
 }
 
-.submit-btn:hover {
-    background-color: #4dd0e1; /* Darker aqua on hover */
-    color: #ffffff; /* White text on hover for better contrast */
+.submit-btn:hover, .stats-toggle:hover, .stats-buttons button:hover {
+    background-color: #43A047; /* Darker green on hover */
+    transform: translateY(-2px); /* Slight lift effect */
 }
 
-/* Help Content */
-.help-content {
-    color: #4a5568; /* General text color for help content */
-    padding: 20px;
-}
-
-.help-content h2, .help-content h3 {
-    color: #4dd0e1; /* Accent color for help headings */
-}
-
-.help-content ul {
-    list-style-type: square;
-    padding-left: 20px;
-}
-
-/* Statistical Tools Toggle */
 .stats-toggle {
-    text-align: center;
-    padding: 5px;
-    cursor: pointer;
-    color: #607d8b; /* Medium grey-blue */
-    transition: color 0.3s;
-    border-top: 1px solid #e0f7fa; /* Lighter border to separate from input */
+    background-color: #607D8B; /* Darker blue-gray for toggle */
 }
 
 .stats-toggle:hover {
-    color: #4dd0e1; /* Accent color on hover */
+    background-color: #546E7A;
 }
 
-/* Statistical Buttons */
 .stats-buttons {
     display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    border-top: 1px solid #e0f7fa; /* Lighter border for separation */
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: center;
 }
 
-.stat-btn {
-    background-color: #e0f7fa; /* Light aqua background */
-    color: #4a5568; /* Dark grey-blue text */
-    border: 1px solid #80deea; /* Aqua border */
-    padding: 5px 10px;
-    cursor: pointer;
-    font-family: 'Courier New', monospace;
-    border-radius: 3px;
-    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+.stats-buttons button {
+    background-color: #7986CB; /* Lighter blue for stats buttons */
+    flex-grow: 1;
+    min-width: 120px; /* Ensure buttons don't get too small */
 }
 
-.stat-btn:hover {
-    background-color: #80deea; /* More saturated aqua on hover */
-    color: #263238; /* Darker text on hover */
-    border-color: #4dd0e1; /* Darker aqua border on hover */
+.stats-buttons button:hover {
+    background-color: #5C6BC0;
 }
 
-/* --- New CSS for Visual Fractions --- */
-.fraction-container {
-    display: inline-block;
-    vertical-align: middle; /* Align with text baseline */
+#history-output, #help {
+    padding: 15px; /* Add padding here as tab-content no longer has it */
+}
+
+#history-output p, #help p, #help ul {
+    margin-bottom: 10px;
+}
+
+#help ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.main-footer {
     text-align: center;
-    line-height: 1.2; /* Adjust line height for better spacing */
-    white-space: nowrap; /* Prevent line breaks within fraction */
-    margin: 0 4px; /* Small margin around fraction */
+    padding: 15px 0;
+    margin-top: 20px;
+    color: #666;
+    font-size: 0.9rem;
+    border-top: 1px solid var(--border-color);
+    background-color: var(--primary-bg);
 }
 
-.fraction-numerator,
-.fraction-denominator {
-    display: block;
+.main-footer p {
+    margin-bottom: 5px;
 }
 
-.fraction-line {
-    display: block;
-    border-bottom: 1px solid #4a5568; /* Use your text color */
-    width: 100%; /* Spans full width */
-    margin: 0 auto; /* Center the line */
-    height: 1px; /* Minimal height for the line itself */
-    padding-top: 2px; /* Small space above line */
-    padding-bottom: 2px; /* Small space below line */
+.main-footer a {
+    color: #007BFF; /* Link color */
+    text-decoration: none;
 }
 
-/* Responsive Adjustments */
+.main-footer a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
 @media (max-width: 600px) {
-    .container { width: 95%; }
-    .tab, .symbol-btn, .stat-btn { font-size: 0.9em; }
-    .submit-btn { padding: 6px 10px; }
-    #commandInput { height: 40px; }
+    .container {
+        padding: 15px;
+        width: 95%;
+    }
+
+    .tab {
+        padding: 10px 15px;
+        font-size: 0.9rem;
+    }
+
+    .input-controls {
+        flex-direction: column;
+    }
+
+    .submit-btn, .stats-toggle {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+/* For MathJax output */
+.MathJax {
+    overflow-x: auto; /* Allow horizontal scrolling for wide formulas */
+    padding: 5px 0; /* Add some vertical padding */
 }
