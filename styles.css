@@ -93,7 +93,7 @@ body {
 }
 
 .tab:hover {
-    background-color: #2a3a48; /* Darken for hover effect */
+    background-color: #2a3a48; /* Darken of #34495e */
 }
 
 .tab.active {
@@ -221,7 +221,7 @@ body {
 }
 
 .stats-toggle:hover {
-    background-color: #5a6167; /* Darken for hover effect */
+    background-color: #5a6167; /* Darken of #6c757d */
 }
 
 .stats-buttons {
@@ -240,7 +240,7 @@ body {
 }
 
 .stats-buttons button:hover {
-    background-color: #444; /* Darken for hover effect */
+    background-color: #444; /* Darken of #555 */
 }
 
 #history-output, #help {
