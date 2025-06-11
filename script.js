@@ -39,7 +39,7 @@ function extractNumbers(text) {
 function formatFraction(numerator, denominator) {
     if (denominator === 0) return "Error: Division by zero";
     if (numerator === 0) return "0";
-    
+
     // Convert to numbers for consistent behavior
     numerator = parseFloat(numerator);
     denominator = parseFloat(denominator);
@@ -48,16 +48,16 @@ function formatFraction(numerator, denominator) {
     if (numerator % denominator === 0) {
         return (numerator / denominator).toString();
     }
-    
+
     // Scale to handle up to 6 decimal places for precision during GCD calculation
     const scaleFactor = 1000000;
-    const numScaled = Math.round(numerator * scaleFactor); 
+    const numScaled = Math.round(numerator * scaleFactor);
     const denScaled = Math.round(denominator * scaleFactor);
 
     // Function to calculate Greatest Common Divisor
     const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
     let common = gcd(Math.abs(numScaled), Math.abs(denScaled));
-    
+
     let simplifiedNum = numScaled / common;
     let simplifiedDen = denScaled / common;
 
@@ -66,7 +66,7 @@ function formatFraction(numerator, denominator) {
         simplifiedNum = -simplifiedNum;
         simplifiedDen = -simplifiedDen;
     }
-    
+
     // If after simplification it's still a float (due to initial scaling or non-exact fraction)
     // or if the denominator is 1, return a simple number. Otherwise, return LaTeX fraction.
     if (simplifiedDen === 1) {
@@ -279,7 +279,7 @@ function solveLinearEquation(query) {
             return 'No solution (e.g., $0 = 5$).';
         }
     }
-    
+
     const numerator = -final_c;
     const denominator = final_b;
 
@@ -322,7 +322,7 @@ function solveQuadraticEquation(query) {
         const x2 = formatFraction(x2_num, x2_den);
 
         // Check if solutions are numerically very close (e.g., due to floating point error)
-        if (Math.abs((x1_num / x1_den) - (x2_num / x2_den)) < 1e-9) { 
+        if (Math.abs((x1_num / x1_den) - (x2_num / x2_den)) < 1e-9) {
             return `Solution: $x = ${x1}$`;
         } else {
             return `Solutions: $x_1 = ${x1}, x_2 = ${x2}$`;
@@ -465,7 +465,7 @@ function calculateStat(statType) {
 
     const input = inputElement.value.trim();
     const numbers = extractNumbers(input);
-    
+
     if (numbers.length > 0) {
         let result;
         switch (statType) {
@@ -504,7 +504,7 @@ function solveTextBasedMathQuery(query) {
     }
 
     // Use processedQuery for subsequent checks
-    
+
     // Derivatives (e.g., "d/dx x^2")
     const derivativeMatch = processedQuery.match(/(?:d\/dx|derivative of)\s*(.+)/);
     if (derivativeMatch) {
@@ -600,8 +600,8 @@ function solveTextBasedMathQuery(query) {
             response = 'Please specify "two-digit" or "three-digit" or provide numbers.';
         }
         return response;
-    } 
-    
+    }
+
     // Basic Statistical Queries (e.g., "average of 4 and 6")
     if (lowerQuery.includes('average') || lowerQuery.includes('mean')) {
         if (numbers.length > 0) response = `The average is ${calculateAverage(numbers)}.`;
@@ -657,7 +657,7 @@ function solveTextBasedMathQuery(query) {
 function updateHistory() {
     const historyDiv = document.getElementById('history-output');
     if (historyDiv) {
-        historyDiv.innerHTML = history.length ? 
+        historyDiv.innerHTML = history.length ?
             history.map((entry, index) => `<p><strong>${index + 1}:</strong> ${entry.query}<br>Response: ${entry.response}</p>`).join('') :
             '<p>No history.</p>';
         if (typeof MathJax !== 'undefined') { // Render math in history as well
