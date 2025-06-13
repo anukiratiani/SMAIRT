@@ -64,7 +64,7 @@ body {
     box-shadow: 0 6px 20px var(--shadow-color);
     padding: 30px;
     width: 90%;
-    max-width: 960px; /* Increased max width for better proportions */
+    max-width: 960px;
     margin: 30px auto;
     flex-grow: 1;
     display: flex;
@@ -99,7 +99,7 @@ body {
 .tab.active {
     background-color: var(--tab-active-bg);
     color: var(--tab-active-text);
-    border-bottom: 2px solid var(--tab-active-bg); /* Match bottom border */
+    border-bottom: 2px solid var(--tab-active-bg);
     font-weight: 700;
 }
 
@@ -135,19 +135,19 @@ body {
     margin: 8px 0;
     padding: 10px 15px;
     border-radius: 8px;
-    background-color: #333; /* Darker for contrast */
+    background-color: #333;
 }
 
 .output p.user-query {
     background-color: #444;
-    color: #8fbc8f; /* Light green for user */
+    color: #8fbc8f;
     align-self: flex-end;
     max-width: 80%;
 }
 
 .output p.smairt-response {
-    background-color: #282c34; /* Darker blue-gray for SMAIRT */
-    color: #d19a66; /* Light gold/beige for SMAIRT */
+    background-color: #282c34;
+    color: #d19a66;
     align-self: flex-start;
     max-width: 80%;
 }
@@ -158,7 +158,7 @@ body {
 
 .MathJax {
     font-size: 1.2em !important;
-    color: var(--text-color-primary); /* Ensure MathJax also uses primary text color */
+    color: var(--text-color-primary);
 }
 
 .input-area {
@@ -187,7 +187,7 @@ body {
 
 #commandInput:focus {
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3); /* Gold focus ring */
+    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
 }
 
 .input-controls {
@@ -217,7 +217,7 @@ body {
 }
 
 .stats-toggle {
-    background-color: #6c757d; /* A neutral dark gray for toggle */
+    background-color: #6c757d;
 }
 
 .stats-toggle:hover {
@@ -233,8 +233,8 @@ body {
 }
 
 .stats-buttons button {
-    background-color: #555; /* Dark gray for stats buttons */
-    flex-grow: 0; /* Don't let them grow too much */
+    background-color: #555;
+    flex-grow: 0;
     min-width: 120px;
     color: var(--text-color-primary);
 }
@@ -281,7 +281,6 @@ body {
     color: var(--accent-hover);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .container {
         width: 95%;
