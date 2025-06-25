@@ -352,6 +352,7 @@ function openTab(tabName) {
         }
         if (tabName === 'history') updateHistory();
         if (typeof MathJax !== 'undefined') {
+            // Typeset the content of the newly opened tab
             MathJax.typesetPromise([document.getElementById(tabName)]).catch((err) => console.error('MathJax typesetting error:', err));
         }
     } else {
@@ -359,13 +360,49 @@ function openTab(tabName) {
     }
 }
 
+// --- NEW UTILITY FUNCTION ---
+function appendResponse(userQuery, smairtResponse, isMathJaxNeeded = true) {
+    const outputDiv = document.getElementById('output');
+    if (!outputDiv) {
+        console.error('appendResponse: output div not found');
+        return;
+    }
+
+    // Create a new paragraph for the user's query
+    const userP = document.createElement('p');
+    userP.classList.add('user-query');
+    userP.textContent = `> ${userQuery}`;
+    outputDiv.appendChild(userP);
+
+    // Create a new paragraph for SMAIRT's response
+    const smairtP = document.createElement('p');
+    smairtP.classList.add('smairt-response');
+    smairtP.innerHTML = smairtResponse; // Use innerHTML for MathJax to render
+
+    outputDiv.appendChild(smairtP);
+
+    // Scroll to the bottom
+    outputDiv.scrollTop = outputDiv.scrollHeight;
+
+    // Typeset with MathJax if needed
+    if (isMathJaxNeeded && typeof MathJax !== 'undefined') {
+        // Use a timeout to ensure the DOM has updated before typesetting
+        // This can sometimes help with rendering issues on quickly appended elements
+        setTimeout(() => {
+            MathJax.typesetPromise([smairtP]).catch((err) => console.error('MathJax typesetting error:', err));
+        }, 10); // Small delay
+    } else if (isMathJaxNeeded) {
+        console.warn('MathJax not loaded for typesetting.');
+    }
+}
+
+// --- MODIFIED submitQuery FUNCTION ---
 function submitQuery() {
     console.log('submitQuery function called.');
     const input = document.getElementById('commandInput');
-    const outputDiv = document.getElementById('output');
 
-    if (!input || !outputDiv) {
-        console.error('submitQuery: commandInput or output div not found. Input element:', input, 'Output div:', outputDiv);
+    if (!input) {
+        console.error('submitQuery: commandInput not found.');
         return;
     }
 
@@ -375,22 +412,14 @@ function submitQuery() {
     if (query) {
         const correctedQuery = correctSpelling(query);
         console.log('Corrected Query:', correctedQuery);
-        outputDiv.innerHTML += `<p class="user-query">> ${correctedQuery}</p>`;
         const response = solveTextBasedMathQuery(correctedQuery);
-        outputDiv.innerHTML += `<p class="smairt-response">${response}</p>`;
+
+        appendResponse(correctedQuery, response, true); // Always assume MathJax might be needed for a math query
+
         history.push({ query: correctedQuery, response });
         input.value = '';
-        outputDiv.scrollTop = outputDiv.scrollHeight;
-
-        if (typeof MathJax !== 'undefined') {
-            MathJax.typesetPromise([outputDiv]).catch((err) => console.error('MathJax typesetting error:', err));
-        } else {
-            console.warn('MathJax not loaded.');
-        }
-
     } else {
-        outputDiv.innerHTML += `<p class="smairt-response">Please enter a query.</p>`;
-        outputDiv.scrollTop = outputDiv.scrollHeight;
+        appendResponse('', 'Please enter a query.', false); // No MathJax for this simple message
         console.log('Empty query submitted.');
     }
 }
@@ -407,20 +436,20 @@ function toggleStats() {
     }
 }
 
+// --- MODIFIED calculateStat FUNCTION ---
 function calculateStat(statType) {
     const inputElement = document.getElementById('commandInput');
-    const outputDiv = document.getElementById('output');
-
-    if (!inputElement || !outputDiv) {
-        console.error('calculateStat: commandInput or output div not found');
+    if (!inputElement) {
+        console.error('calculateStat: commandInput not found');
         return;
     }
 
     const input = inputElement.value.trim();
     const numbers = extractNumbers(input);
+    let result = '';
+    let isMathJaxNeeded = false; // By default, stats results aren't LaTeX, unless explicitly using MathJax for numbers
 
     if (numbers.length > 0) {
-        let result;
         switch (statType) {
             case 'average': result = `The average is ${calculateAverage(numbers)}.`; break;
             case 'mode': result = `The mode is ${calculateMode(numbers)}.`; break;
@@ -428,17 +457,14 @@ function calculateStat(statType) {
             case 'range': result = `The range is ${calculateRange(numbers)}.`; break;
             default: result = 'Unknown statistical operation. For advanced stats, type the query directly.'; break;
         }
-        outputDiv.innerHTML += `<p class="user-query">> ${statType} of ${input}</p>`;
-        outputDiv.innerHTML += `<p class="smairt-response">${result}</p>`;
+        appendResponse(`${statType} of ${input}`, result, isMathJaxNeeded);
         history.push({ query: `${statType} of ${input}`, response: result });
-        outputDiv.scrollTop = outputDiv.scrollHeight;
-        if (typeof MathJax !== 'undefined') {
-            MathJax.typesetPromise([outputDiv]).catch((err) => console.error('MathJax typesetting error:', err));
-        }
+        document.getElementById('commandInput').value = ''; // Clear input after stat calculation
     } else {
-        outputDiv.innerHTML += `<p class="smairt-response">Error: No numbers found in "${input}".</p>`;
+        appendResponse('', `Error: No numbers found in "${input}".`, false);
     }
 }
+
 
 function solveTextBasedMathQuery(query) {
     const lowerQuery = query.toLowerCase();
@@ -519,6 +545,7 @@ function solveTextBasedMathQuery(query) {
                     break;
                 default: result = 'Error: Invalid arithmetic operation.'; break;
             }
+            // Ensure arithmetic results are also enclosed in $...$ for consistent rendering if they include fractions
             response = `Result: $${n1} ${operator === ':' ? '/' : operator} ${n2} = ${result}$`;
             return response;
         } else {
@@ -540,6 +567,7 @@ function solveTextBasedMathQuery(query) {
         return response;
     }
 
+    // These statistical calculations are now also handled by calculateStat, but remain here for direct query input.
     if (lowerQuery.includes('average') || lowerQuery.includes('mean')) {
         if (numbers.length > 0) response = `The average is ${calculateAverage(numbers)}.`;
         else response = 'Error: No numbers provided for average.';
@@ -587,14 +615,23 @@ function solveTextBasedMathQuery(query) {
     return response;
 }
 
+// --- MODIFIED updateHistory FUNCTION ---
 function updateHistory() {
     const historyDiv = document.getElementById('history-output');
     if (historyDiv) {
-        historyDiv.innerHTML = history.length ?
-            history.map((entry, index) => `<p><strong>${index + 1}:</strong> ${entry.query}<br>Response: ${entry.response}</p>`).join('') :
-            '<p>No history.</p>';
-        if (typeof MathJax !== 'undefined') {
-            MathJax.typesetPromise([historyDiv]).catch((err) => console.error('MathJax typesetting error:', err));
+        historyDiv.innerHTML = ''; // Clear existing history
+
+        if (history.length > 0) {
+            history.forEach((entry, index) => {
+                const p = document.createElement('p');
+                p.innerHTML = `<strong>${index + 1}:</strong> ${entry.query}<br>Response: ${entry.response}`;
+                historyDiv.appendChild(p);
+            });
+            if (typeof MathJax !== 'undefined') {
+                MathJax.typesetPromise([historyDiv]).catch((err) => console.error('MathJax typesetting error:', err));
+            }
+        } else {
+            historyDiv.innerHTML = '<p>No history.</p>';
         }
     } else {
         console.error('updateHistory: History output div not found.');
