@@ -43,6 +43,31 @@
             <div class="input-area">
                 <textarea id="commandInput" placeholder="Enter your math problem or query here..."></textarea>
                 <div class="input-controls">
+<!-- Assuming your input fields are somewhere around here -->
+<div class="some-container">
+  <h2>Your Form Title</h2>
+
+  <form action="/your-submission-endpoint" method="post">
+    <!-- Add your actual input fields here. For example: -->
+    <div class="form-group">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password">
+    </div>
+
+    <!-- The existing .input-controls div with your submit button -->
+    <div class="input-controls">
+      <button id="submitBtn" type="submit">Submit</button>
+      <button class="stats-toggle">Toggle Stats</button>
+    </div>
+
+  </form>
+
+</div>
                     <button class="submit-btn" id="submitBtn">Submit</button>
                     <button class="stats-toggle" onclick="toggleStats()">▼ Statistical Tools</button>
                 </div>
