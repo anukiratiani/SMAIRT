@@ -353,6 +353,7 @@ function openTab(tabName) {
         if (tabName === 'history') updateHistory();
         if (typeof MathJax !== 'undefined') {
             // Typeset the content of the newly opened tab
+            // This is now safer because openTab is called after MathJax.startup.promise resolves
             MathJax.typesetPromise([document.getElementById(tabName)]).catch((err) => console.error('MathJax typesetting error:', err));
         }
     } else {
@@ -360,7 +361,7 @@ function openTab(tabName) {
     }
 }
 
-// --- NEW UTILITY FUNCTION ---
+// --- NEW UTILITY FUNCTION: appendResponse ---
 function appendResponse(userQuery, smairtResponse, isMathJaxNeeded = true) {
     const outputDiv = document.getElementById('output');
     if (!outputDiv) {
@@ -398,7 +399,7 @@ function appendResponse(userQuery, smairtResponse, isMathJaxNeeded = true) {
 
 // --- MODIFIED submitQuery FUNCTION ---
 function submitQuery() {
-    console.log('submitQuery function called.');
+    console.log('submitQuery function HAS BEEN CALLED.');
     const input = document.getElementById('commandInput');
 
     if (!input) {
@@ -417,7 +418,7 @@ function submitQuery() {
         appendResponse(correctedQuery, response, true); // Always assume MathJax might be needed for a math query
 
         history.push({ query: correctedQuery, response });
-        input.value = '';
+        input.value = ''; // Clear input after submission
     } else {
         appendResponse('', 'Please enter a query.', false); // No MathJax for this simple message
         console.log('Empty query submitted.');
@@ -447,7 +448,7 @@ function calculateStat(statType) {
     const input = inputElement.value.trim();
     const numbers = extractNumbers(input);
     let result = '';
-    let isMathJaxNeeded = false; // By default, stats results aren't LaTeX, unless explicitly using MathJax for numbers
+    let isMathJaxNeeded = false; // By default, stats results aren't LaTeX
 
     if (numbers.length > 0) {
         switch (statType) {
@@ -638,15 +639,32 @@ function updateHistory() {
     }
 }
 
+// --- MODIFIED DOMContentLoaded LISTENER ---
 document.addEventListener('DOMContentLoaded', () => {
-    openTab('problem-input');
     console.log('SMAIRT loaded');
+    console.log('DOMContentLoaded fired.');
+
+    // Wait for MathJax to be fully ready before opening the initial tab
+    if (typeof MathJax !== 'undefined' && MathJax.startup && MathJax.startup.promise) {
+        MathJax.startup.promise.then(() => {
+            console.log('MathJax is ready, opening initial tab.');
+            openTab('problem-input'); // Now call openTab only when MathJax is guaranteed to be ready
+        }).catch((err) => {
+            console.error('Error waiting for MathJax startup promise:', err);
+            // Fallback if MathJax fails to load, still try to open tab
+            openTab('problem-input');
+        });
+    } else {
+        console.warn('MathJax object or startup promise not found. Opening tab without waiting for MathJax.');
+        openTab('problem-input'); // Fallback in case MathJax script failed to load entirely
+    }
 
     const commandInputTextarea = document.getElementById('commandInput');
     if (commandInputTextarea) {
         commandInputTextarea.addEventListener('keydown', function(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
                 event.preventDefault();
+                console.log('Enter key pressed, calling submitQuery...');
                 submitQuery();
             }
         });
@@ -657,7 +675,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const submitButton = document.getElementById('submitBtn');
     if (submitButton) {
-        submitButton.addEventListener('click', submitQuery);
+        submitButton.addEventListener('click', () => {
+            console.log('Submit button clicked, calling submitQuery...');
+            submitQuery();
+        });
         console.log('Event listener attached to Submit button.');
     } else {
         console.error('Submit button with ID "submitBtn" not found to attach event listener.');
