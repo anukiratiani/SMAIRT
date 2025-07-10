@@ -313,8 +313,8 @@ function evaluateFunction(query) {
         } catch (e) {
             console.error("Function evaluation error:", e);
             return 'Error: Could not evaluate the function. Please check the expression.';
+        }<br>
         }
-    }
     return 'Error: Invalid function evaluation format. Try "evaluate x^2 + 3x for x = 5".';
 }
 
@@ -352,8 +352,6 @@ function openTab(tabName) {
         }
         if (tabName === 'history') updateHistory();
         if (typeof MathJax !== 'undefined') {
-            // Typeset the content of the newly opened tab
-            // This is now safer because openTab is called after MathJax.startup.promise resolves
             MathJax.typesetPromise([document.getElementById(tabName)]).catch((err) => console.error('MathJax typesetting error:', err));
         }
     } else {
@@ -387,11 +385,9 @@ function appendResponse(userQuery, smairtResponse, isMathJaxNeeded = true) {
 
     // Typeset with MathJax if needed
     if (isMathJaxNeeded && typeof MathJax !== 'undefined') {
-        // Use a timeout to ensure the DOM has updated before typesetting
-        // This can sometimes help with rendering issues on quickly appended elements
         setTimeout(() => {
             MathJax.typesetPromise([smairtP]).catch((err) => console.error('MathJax typesetting error:', err));
-        }, 10); // Small delay
+        }, 10);
     } else if (isMathJaxNeeded) {
         console.warn('MathJax not loaded for typesetting.');
     }
@@ -546,7 +542,6 @@ function solveTextBasedMathQuery(query) {
                     break;
                 default: result = 'Error: Invalid arithmetic operation.'; break;
             }
-            // Ensure arithmetic results are also enclosed in $...$ for consistent rendering if they include fractions
             response = `Result: $${n1} ${operator === ':' ? '/' : operator} ${n2} = ${result}$`;
             return response;
         } else {
@@ -568,7 +563,6 @@ function solveTextBasedMathQuery(query) {
         return response;
     }
 
-    // These statistical calculations are now also handled by calculateStat, but remain here for direct query input.
     if (lowerQuery.includes('average') || lowerQuery.includes('mean')) {
         if (numbers.length > 0) response = `The average is ${calculateAverage(numbers)}.`;
         else response = 'Error: No numbers provided for average.';
@@ -639,24 +633,66 @@ function updateHistory() {
     }
 }
 
+// --- LOGIN MODAL FUNCTIONS ---
+function openLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) {
+        modal.classList.add('active'); // Use class for opacity transition
+        document.body.style.overflow = 'hidden'; // Prevent scrolling background
+    } else {
+        console.error('openLoginModal: loginModal not found');
+    }
+}
+
+function closeLoginModal() {
+    const modal = document.getElementById('loginModal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+    } else {
+        console.error('closeLoginModal: loginModal not found');
+    }
+}
+
+function handleLoginSubmit(event) {
+    event.preventDefault(); // Prevent default form submission
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+
+    const username = usernameInput.value;
+    const password = passwordInput.value;
+
+    // In a real application, you'd send these credentials to a server
+    console.log('Attempting login with:');
+    console.log('Username:', username);
+    console.log('Password:', '*'.repeat(password.length)); // Don't log actual password
+
+    // For now, just close the modal and provide a fake response
+    closeLoginModal();
+    appendResponse('Login Attempt', `Login successful! (This is a placeholder. User: ${username})`, false);
+
+    // Clear the form fields
+    usernameInput.value = '';
+    passwordInput.value = '';
+}
+
+
 // --- MODIFIED DOMContentLoaded LISTENER ---
 document.addEventListener('DOMContentLoaded', () => {
     console.log('SMAIRT loaded');
     console.log('DOMContentLoaded fired.');
 
-    // Wait for MathJax to be fully ready before opening the initial tab
     if (typeof MathJax !== 'undefined' && MathJax.startup && MathJax.startup.promise) {
         MathJax.startup.promise.then(() => {
             console.log('MathJax is ready, opening initial tab.');
-            openTab('problem-input'); // Now call openTab only when MathJax is guaranteed to be ready
+            openTab('problem-input');
         }).catch((err) => {
             console.error('Error waiting for MathJax startup promise:', err);
-            // Fallback if MathJax fails to load, still try to open tab
             openTab('problem-input');
         });
     } else {
         console.warn('MathJax object or startup promise not found. Opening tab without waiting for MathJax.');
-        openTab('problem-input'); // Fallback in case MathJax script failed to load entirely
+        openTab('problem-input');
     }
 
     const commandInputTextarea = document.getElementById('commandInput');
@@ -682,5 +718,40 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log('Event listener attached to Submit button.');
     } else {
         console.error('Submit button with ID "submitBtn" not found to attach event listener.');
+    }
+
+    // --- Login Modal Event Listeners ---
+    const loginBtn = document.getElementById('loginBtn');
+    const loginModal = document.getElementById('loginModal');
+    const modalCloseBtn = document.querySelector('.modal-close-btn');
+    const loginForm = document.getElementById('loginForm');
+
+    if (loginBtn) {
+        loginBtn.addEventListener('click', openLoginModal);
+        console.log('Event listener attached to Login button.');
+    } else {
+        console.error('Login button with ID "loginBtn" not found.');
+    }
+
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', closeLoginModal);
+        console.log('Event listener attached to modal close button.');
+    }
+
+    if (loginModal) {
+        // Close modal if user clicks outside the content
+        loginModal.addEventListener('click', (event) => {
+            if (event.target === loginModal) {
+                closeLoginModal();
+            }
+        });
+        console.log('Event listener attached to modal overlay for closing.');
+    }
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLoginSubmit);
+        console.log('Event listener attached to login form submission.');
+    } else {
+        console.error('Login form with ID "loginForm" not found.');
     }
 });
