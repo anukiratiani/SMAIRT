@@ -313,8 +313,8 @@ function evaluateFunction(query) {
         } catch (e) {
             console.error("Function evaluation error:", e);
             return 'Error: Could not evaluate the function. Please check the expression.';
-        }<br>
         }
+    }
     return 'Error: Invalid function evaluation format. Try "evaluate x^2 + 3x for x = 5".';
 }
 
@@ -680,44 +680,44 @@ function handleLoginSubmit(event) {
 // --- MODIFIED DOMContentLoaded LISTENER ---
 document.addEventListener('DOMContentLoaded', () => {
     console.log('SMAIRT loaded');
-    console.log('DOMContentLoaded fired.');
 
+    // Initial tab opening with MathJax check
     if (typeof MathJax !== 'undefined' && MathJax.startup && MathJax.startup.promise) {
         MathJax.startup.promise.then(() => {
             console.log('MathJax is ready, opening initial tab.');
             openTab('problem-input');
         }).catch((err) => {
             console.error('Error waiting for MathJax startup promise:', err);
-            openTab('problem-input');
+            openTab('problem-input'); // Fallback if MathJax fails
         });
     } else {
         console.warn('MathJax object or startup promise not found. Opening tab without waiting for MathJax.');
         openTab('problem-input');
     }
 
+    // Event listener for Enter key on command input
     const commandInputTextarea = document.getElementById('commandInput');
     if (commandInputTextarea) {
         commandInputTextarea.addEventListener('keydown', function(event) {
             if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                console.log('Enter key pressed, calling submitQuery...');
+                event.preventDefault(); // Prevent new line
+                console.log('Enter key pressed on commandInput, calling submitQuery()...');
                 submitQuery();
             }
         });
-        console.log('Event listener attached to commandInput for Enter key.');
     } else {
         console.error('commandInput textarea not found for keydown listener.');
     }
 
+    // Event listener for Submit button click
     const submitButton = document.getElementById('submitBtn');
     if (submitButton) {
         submitButton.addEventListener('click', () => {
-            console.log('Submit button clicked, calling submitQuery...');
+            console.log('Submit button clicked, calling submitQuery()...');
             submitQuery();
         });
-        console.log('Event listener attached to Submit button.');
     } else {
-        console.error('Submit button with ID "submitBtn" not found to attach event listener.');
+        console.error('Submit button with ID "submitBtn" not found.');
     }
 
     // --- Login Modal Event Listeners ---
@@ -728,14 +728,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (loginBtn) {
         loginBtn.addEventListener('click', openLoginModal);
-        console.log('Event listener attached to Login button.');
     } else {
         console.error('Login button with ID "loginBtn" not found.');
     }
 
     if (modalCloseBtn) {
         modalCloseBtn.addEventListener('click', closeLoginModal);
-        console.log('Event listener attached to modal close button.');
     }
 
     if (loginModal) {
@@ -745,12 +743,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeLoginModal();
             }
         });
-        console.log('Event listener attached to modal overlay for closing.');
     }
 
     if (loginForm) {
         loginForm.addEventListener('submit', handleLoginSubmit);
-        console.log('Event listener attached to login form submission.');
     } else {
         console.error('Login form with ID "loginForm" not found.');
     }
