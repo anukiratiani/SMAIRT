@@ -1,34 +1,38 @@
 :root {
-    /* Baby Blue and Soft Palette */
-    --primary-bg: #E0F2F7; /* Very light baby blue/off-white for main background */
-    --secondary-bg: rgba(255, 255, 255, 0.8); /* White with strong transparency for main blocks */
-    --accent-color: #87CEEB; /* Sky Blue - primary accent */
-    --accent-hover: #6CB6D1; /* Slightly darker sky blue for hover */
-    --text-color-primary: #333; /* Dark gray for main text */
-    --text-color-secondary: #555; /* Medium gray for secondary text */
-    --border-color: rgba(135, 206, 235, 0.4); /* Transparent baby blue border */
-    --shadow-color: rgba(0, 0, 0, 0.1); /* Lighter, subtle shadow */
+    /* Baby Blue and Soft Palette for High-Level Design */
+    --primary-bg: #E0F7FA; /* Very light, almost white baby blue for overall background */
+    --secondary-bg: rgba(255, 255, 255, 0.7); /* Transparent white for main content blocks (container, modal) */
+    --accent-color: #81D4FA; /* Vibrant Sky Blue - main accent */
+    --accent-hover: #4FC3F7; /* Slightly deeper blue for hover states */
+    --text-color-primary: #263238; /* Dark charcoal for primary text (readability) */
+    --text-color-secondary: #546E7A; /* Muted blue-gray for secondary text */
+    --border-color: rgba(129, 212, 250, 0.3); /* Soft, transparent baby blue border */
+    --shadow-color: rgba(0, 0, 0, 0.08); /* Very light, subtle shadow */
+    --light-shadow: rgba(0, 0, 0, 0.03); /* Even lighter for inner shadows */
 
-    --header-bg: rgba(135, 206, 235, 0.2); /* Transparent baby blue for header */
-    --header-text: #2c3e50; /* Dark navy for header text, contrasting with blue */
+    --header-bg: rgba(129, 212, 250, 0.2); /* Light transparent baby blue for header */
+    --header-text: #263238; /* Dark charcoal for header title */
     
     --output-bg: rgba(255, 255, 255, 0.6); /* Translucent white for output area */
     --input-bg: rgba(255, 255, 255, 0.9); /* More opaque white for input field */
-    --input-text: #333; /* Dark text for input */
+    --input-text: var(--text-color-primary);
 
-    --tab-active-bg: var(--accent-color); /* Sky blue for active tab */
-    --tab-active-text: #fff; /* White text on active tab */
-    --tab-inactive-bg: rgba(255, 255, 255, 0.4); /* More transparent white for inactive tabs */
-    --tab-inactive-text: #555; /* Medium gray for inactive tab text */
+    --tab-active-bg: var(--accent-color); /* Vibrant sky blue for active tab */
+    --tab-active-text: #FFFFFF; /* White text on active tab */
+    --tab-inactive-bg: rgba(255, 255, 255, 0.3); /* More transparent white for inactive tabs */
+    --tab-inactive-text: var(--text-color-secondary); /* Muted gray for inactive tab text */
 
-    --button-bg: var(--accent-color); /* Sky blue for buttons */
-    --button-text: #fff; /* White text on buttons */
+    --button-bg: var(--accent-color); /* Vibrant sky blue for main buttons */
+    --button-text: #FFFFFF; /* White text on main buttons */
     --button-hover-bg: var(--accent-hover); /* Darker sky blue on button hover */
     
-    --user-query-bg: rgba(135, 206, 235, 0.2); /* Light transparent blue for user queries */
-    --user-query-text: #2c3e50; /* Dark navy for user query text */
+    --user-query-bg: rgba(129, 212, 250, 0.15); /* Very light transparent blue for user queries */
+    --user-query-text: var(--text-color-primary); /* Dark charcoal for user query text */
     --smairt-response-bg: rgba(255, 255, 255, 0.7); /* More opaque white for SMAIRT responses */
-    --smairt-response-text: #333; /* Dark gray for SMAIRT response text */
+    --smairt-response-text: var(--text-color-primary); /* Dark charcoal for SMAIRT response text */
+
+    --modal-overlay-bg: rgba(0, 0, 0, 0.4); /* Darker, semi-transparent overlay for modal */
+    --modal-content-bg: rgba(255, 255, 255, 0.85); /* Slightly more opaque white for modal content */
 }
 
 body {
@@ -38,95 +42,143 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background: linear-gradient(135deg, #ADD8E6 0%, #B0E0E6 50%, #E0FFFF 100%); /* Soft blue gradient */
+    /* Soft, ethereal blue gradient background */
+    background: linear-gradient(135deg, #B2EBF2 0%, #E0F2F7 50%, #E0FFFF 100%);
     color: var(--text-color-primary);
-    line-height: 1.6;
-    overflow-y: auto; /* Changed to auto for better scrolling */
+    line-height: 1.7; /* Slightly more spacious line height */
+    overflow-y: auto;
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
 }
+
+/* Scrollbar Styling for a more polished look */
+body::-webkit-scrollbar {
+    width: 10px;
+}
+body::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+body::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+}
+body::-webkit-scrollbar-thumb:hover {
+    background-color: var(--accent-hover);
+}
+
 
 .main-header {
     background-color: var(--header-bg);
     color: var(--header-text);
-    padding: 1.5rem 0;
+    padding: 2rem 0; /* More padding */
     text-align: center;
-    box-shadow: 0 2px 15px var(--shadow-color); /* Enhanced shadow */
-    margin-bottom: 30px;
-    backdrop-filter: blur(5px); /* Frosted glass effect */
-    -webkit-backdrop-filter: blur(5px); /* For Safari */
+    box-shadow: 0 4px 20px var(--shadow-color); /* Enhanced shadow */
+    margin-bottom: 40px; /* More space below header */
+    backdrop-filter: blur(8px); /* Stronger frosted glass effect */
+    -webkit-backdrop-filter: blur(8px); /* For Safari */
+    position: relative; /* For login button positioning */
 }
 
 .main-header h1 {
     margin: 0;
-    font-size: 3.5rem; /* Slightly larger */
+    font-size: 3.8rem; /* Even larger */
     font-weight: 700;
-    text-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* Softer text shadow */
-    color: var(--header-text); /* Ensure header text color applies */
+    letter-spacing: 1px; /* Subtle letter spacing */
+    text-shadow: 2px 2px 6px rgba(0,0,0,0.08); /* Softer text shadow */
+    color: var(--header-text);
 }
 
 .main-header p {
     margin: 10px 0 0;
-    font-size: 1.3rem; /* Slightly larger */
+    font-size: 1.4rem;
     font-weight: 300;
     opacity: 0.9;
     color: var(--text-color-secondary);
 }
 
+.header-button {
+    position: absolute;
+    top: 50%;
+    right: 30px; /* Aligned to the right */
+    transform: translateY(-50%);
+    background-color: var(--accent-color);
+    color: var(--button-text);
+    border: none;
+    border-radius: 25px; /* Pill shape */
+    padding: 10px 25px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.header-button:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-50%) scale(1.05); /* Slightly larger on hover */
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+}
+
+
 .container {
     background-color: var(--secondary-bg);
-    border-radius: 20px; /* More rounded corners */
-    box-shadow: 0 10px 30px var(--shadow-color); /* Enhanced shadow */
-    padding: 35px; /* More padding */
-    width: 90%;
-    max-width: 1000px; /* Slightly wider */
-    margin: 30px auto;
+    border-radius: 25px; /* Even more rounded corners */
+    box-shadow: 0 15px 40px var(--shadow-color); /* Enhanced shadow */
+    padding: 40px; /* More padding */
+    width: 92%; /* Slightly wider */
+    max-width: 1100px; /* Increased max-width */
+    margin: 40px auto; /* More margin */
     flex-grow: 1;
     display: flex;
     flex-direction: column;
     border: 1px solid var(--border-color); /* Subtle border */
-    backdrop-filter: blur(8px); /* Stronger frosted glass for container */
-    -webkit-backdrop-filter: blur(8px); /* For Safari */
+    backdrop-filter: blur(10px); /* Stronger frosted glass for container */
+    -webkit-backdrop-filter: blur(10px); /* For Safari */
+    transition: all 0.3s ease; /* Smooth transition for container properties */
 }
 
 .tabs {
     display: flex;
     justify-content: flex-start;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     border-bottom: 2px solid var(--border-color);
 }
 
 .tab {
     background-color: var(--tab-inactive-bg);
     border: none;
-    padding: 15px 25px;
+    padding: 18px 30px; /* More padding */
     cursor: pointer;
-    font-size: 1.1rem;
+    font-size: 1.15rem; /* Slightly larger font */
     font-weight: 500;
     color: var(--tab-inactive-text);
-    border-top-left-radius: 10px;
-    border-top-right-radius: 10px;
+    border-top-left-radius: 15px; /* More rounded */
+    border-top-right-radius: 15px;
     transition: background-color 0.3s ease, color 0.3s ease;
-    margin-right: 8px;
-    backdrop-filter: blur(3px); /* Subtle blur for tabs */
-    -webkit-backdrop-filter: blur(3px);
+    margin-right: 10px; /* More spacing */
+    backdrop-filter: blur(4px); /* Subtle blur for tabs */
+    -webkit-backdrop-filter: blur(4px);
+    box-shadow: 0 2px 8px var(--light-shadow); /* Soft shadow for tabs */
 }
 
 .tab:hover {
-    background-color: rgba(135, 206, 235, 0.1); /* Lighter hover for tabs */
-    color: var(--accent-color); /* Change text color on hover */
+    background-color: rgba(129, 212, 250, 0.1); /* Lighter hover with transparency */
+    color: var(--accent-color);
 }
 
 .tab.active {
     background-color: var(--tab-active-bg);
     color: var(--tab-active-text);
-    border-bottom: 2px solid var(--tab-active-bg);
+    border-bottom: 3px solid var(--tab-active-bg); /* Thicker active border */
     font-weight: 700;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Shadow for active tab */
+    box-shadow: 0 4px 10px var(--shadow-color); /* More pronounced shadow for active tab */
 }
 
 .tab-content {
     display: none;
     flex-grow: 1;
-    padding: 20px 0;
+    padding: 25px 0; /* More padding */
 }
 
 #problem-input {
@@ -138,42 +190,63 @@ body {
 .output {
     background-color: var(--output-bg);
     border: 1px solid var(--border-color);
-    border-radius: 15px; /* More rounded */
-    padding: 25px; /* More padding */
-    min-height: 300px; /* Increased min-height */
-    max-height: 550px; /* Adjusted max-height */
+    border-radius: 20px; /* More rounded */
+    padding: 30px; /* More padding */
+    min-height: 350px; /* Increased min-height */
+    max-height: 600px; /* Adjusted max-height */
     overflow-y: auto;
-    margin-bottom: 25px;
+    margin-bottom: 30px;
     word-wrap: break-word;
     white-space: pre-wrap;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
-    backdrop-filter: blur(6px); /* Frosted effect for output */
-    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(7px); /* Frosted effect for output */
+    -webkit-backdrop-filter: blur(7px);
+    box-shadow: inset 0 0 15px var(--light-shadow); /* Inner shadow for depth */
 }
 
+/* Scrollbar for output */
+.output::-webkit-scrollbar {
+    width: 8px;
+}
+.output::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+.output::-webkit-scrollbar-thumb {
+    background-color: rgba(129, 212, 250, 0.5);
+    border-radius: 8px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+.output::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(129, 212, 250, 0.7);
+}
+
+
 .output p {
-    margin: 10px 0; /* More margin */
-    padding: 12px 18px; /* More padding */
-    border-radius: 10px; /* More rounded */
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow for messages */
+    margin: 12px 0; /* More margin */
+    padding: 15px 22px; /* More padding */
+    border-radius: 15px; /* More rounded */
+    box-shadow: 0 2px 8px var(--light-shadow); /* Subtle shadow for messages */
 }
 
 .output p.user-query {
     background-color: var(--user-query-bg);
     color: var(--user-query-text);
     align-self: flex-end;
-    max-width: 75%; /* Slightly narrower */
-    border: 1px solid rgba(135, 206, 235, 0.3); /* Subtle border */
+    max-width: 70%; /* Slightly narrower for definition */
+    border: 1px solid rgba(129, 212, 250, 0.2); /* Subtle border */
+    text-align: right; /* Align user text to right */
 }
 
 .output p.smairt-response {
     background-color: var(--smairt-response-bg);
     color: var(--smairt-response-text);
     align-self: flex-start;
-    max-width: 75%; /* Slightly narrower */
+    max-width: 70%; /* Slightly narrower */
     border: 1px solid rgba(255, 255, 255, 0.5); /* Subtle border */
+    text-align: left; /* Align SMAIRT text to left */
 }
 
 .MathJax_Display {
@@ -181,7 +254,7 @@ body {
 }
 
 .MathJax {
-    font-size: 1.25em !important; /* Slightly larger math text */
+    font-size: 1.3em !important; /* Larger math text */
     color: var(--text-color-primary);
 }
 
@@ -195,166 +268,138 @@ body {
 #commandInput {
     font-family: 'Source Code Pro', monospace;
     border: 1px solid var(--border-color);
-    border-radius: 15px; /* More rounded */
-    padding: 18px; /* More padding */
-    font-size: 1.15rem; /* Slightly larger text */
+    border-radius: 20px; /* More rounded */
+    padding: 20px; /* More padding */
+    font-size: 1.2rem; /* Larger text */
     resize: vertical;
-    min-height: 90px; /* Increased min-height */
-    max-height: 220px; /* Adjusted max-height */
-    width: calc(100% - 36px); /* Adjust width for new padding */
+    min-height: 100px; /* Increased min-height */
+    max-height: 250px; /* Adjusted max-height */
+    width: calc(100% - 40px); /* Adjust width for new padding */
     box-sizing: border-box;
     outline: none;
     background-color: var(--input-bg);
     color: var(--input-text);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-    backdrop-filter: blur(7px); /* Frosted effect for input */
-    -webkit-backdrop-filter: blur(7px);
+    backdrop-filter: blur(8px); /* Frosted effect for input */
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 2px 10px var(--light-shadow); /* Soft outer shadow */
 }
 
 #commandInput:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 4px rgba(135, 206, 235, 0.3); /* Accentuated shadow */
+    border-color: var(--accent-hover);
+    box-shadow: 0 0 0 5px rgba(129, 212, 250, 0.4); /* Accentuated shadow */
 }
 
 .input-controls {
     display: flex;
-    flex-wrap: wrap; /* Allow wrapping for buttons */
-    justify-content: center; /* Center buttons */
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
-    margin-top: 25px; /* More margin */
-    gap: 15px;
+    margin-top: 30px; /* More margin */
+    gap: 20px; /* More gap */
 }
 
-.input-controls .form-group {
-    width: 100%; /* Ensure form groups take full width */
-    margin-bottom: 15px; /* Space between form groups */
-}
-
-.input-controls .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: var(--text-color-secondary);
-}
-
-.input-controls .form-group input[type="text"],
-.input-controls .form-group input[type="password"] {
-    width: calc(100% - 20px); /* Adjust for padding */
-    padding: 10px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.7);
-    color: var(--input-text);
-    font-size: 1rem;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.input-controls .form-group input[type="text"]:focus,
-.input-controls .form-group input[type="password"]:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
-    outline: none;
-}
-
-
-#submitBtn, .stats-toggle, .stats-buttons button, .symbol-buttons button {
+#submitBtn, .stats-toggle {
     background-color: var(--button-bg);
     color: var(--button-text);
     border: none;
-    border-radius: 12px; /* More rounded buttons */
-    padding: 14px 28px; /* Adjusted padding */
-    font-size: 1.05rem; /* Slightly smaller text for better fit */
+    border-radius: 30px; /* Pill shape */
+    padding: 15px 35px; /* Adjusted padding */
+    font-size: 1.1rem;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     flex-grow: 1;
-    text-shadow: none; /* No text shadow on light buttons */
     font-weight: 600;
-    box-shadow: 0 3px 8px rgba(0,0,0,0.15); /* Subtle shadow for buttons */
-    min-width: fit-content; /* Ensure buttons don't shrink too much */
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15); /* More prominent shadow */
+    max-width: 250px; /* Limit button width */
 }
 
-#submitBtn:hover, .stats-toggle:hover, .stats-buttons button:hover, .symbol-buttons button:hover {
+#submitBtn:hover, .stats-toggle:hover {
     background-color: var(--button-hover-bg);
-    transform: translateY(-2px); /* Less dramatic lift */
-    box-shadow: 0 5px 12px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
 }
 
 .stats-toggle {
-    background-color: #ADD8E6; /* Light blue for toggle */
-    color: #333; /* Dark text for toggle */
-    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    background-color: #A7D9ED; /* Lighter blue for toggle */
+    color: var(--text-color-primary);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .stats-toggle:hover {
-    background-color: #9ACFE0; /* Darker light blue on hover */
+    background-color: #87CEEB; /* Darker light blue on hover */
 }
 
 .stats-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px; /* Smaller gap */
-    margin-top: 15px; /* Smaller margin */
+    gap: 12px;
+    margin-top: 20px;
     justify-content: center;
-    width: 100%; /* Ensure it takes full width */
+    width: 100%;
 }
 
 .stats-buttons button {
     background-color: #C1E4F0; /* Even lighter blue for stat buttons */
-    color: #333;
+    color: var(--text-color-primary);
     flex-grow: 0;
-    min-width: 110px; /* Adjusted min-width */
-    padding: 12px 20px; /* Adjusted padding */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    min-width: 120px;
+    padding: 12px 20px;
+    border-radius: 20px; /* More rounded */
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    font-weight: 500;
 }
 
 .stats-buttons button:hover {
-    background-color: #B0D7E4; /* Darken of #C1E4F0 */
+    background-color: #B0D7E4;
 }
 
 .symbol-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 8px; /* Smaller gap for symbols */
-    margin-top: 20px;
+    gap: 10px; /* More spacing for symbols */
+    margin-top: 25px;
     justify-content: center;
     width: 100%;
-    padding: 10px;
-    border: 1px solid rgba(135, 206, 235, 0.2); /* Very light transparent border */
-    border-radius: 15px;
-    background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.05); /* Inner shadow for depth */
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-}
-
-.symbol-buttons button {
-    background-color: rgba(135, 206, 235, 0.3); /* Highly transparent baby blue */
-    color: #2c3e50; /* Dark text for symbols */
-    padding: 8px 12px;
-    font-size: 0.95rem;
-    min-width: unset; /* Remove min-width restriction */
-    box-shadow: none; /* No individual shadow for symbol buttons */
-    border-radius: 8px; /* Slightly less rounded */
-    transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.symbol-buttons button:hover {
-    background-color: rgba(135, 206, 235, 0.6); /* More opaque on hover */
-    transform: translateY(-1px);
-}
-
-#history-output, #help {
-    padding: 20px;
-    background-color: var(--output-bg); /* Use output background for consistency */
-    border-radius: 15px;
-    border: 1px solid var(--border-color);
+    padding: 15px;
+    border: 1px solid rgba(129, 212, 250, 0.1); /* Very light transparent border */
+    border-radius: 20px; /* More rounded */
+    background-color: rgba(255, 255, 255, 0.4); /* Semi-transparent background */
+    box-shadow: inset 0 0 10px var(--light-shadow); /* Inner shadow for depth */
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
 }
 
+.symbol-buttons button {
+    background-color: rgba(129, 212, 250, 0.1); /* Highly transparent baby blue */
+    color: var(--text-color-secondary); /* Muted text for symbols */
+    padding: 10px 14px;
+    font-size: 1rem;
+    min-width: unset;
+    box-shadow: none;
+    border-radius: 12px; /* Slightly less rounded for symbols */
+    transition: background-color 0.2s ease, transform 0.1s ease, color 0.2s ease;
+}
+
+.symbol-buttons button:hover {
+    background-color: rgba(129, 212, 250, 0.4); /* More opaque on hover */
+    color: var(--text-color-primary); /* Darker text on hover */
+    transform: translateY(-2px);
+}
+
+#history-output, #help {
+    padding: 30px;
+    background-color: var(--output-bg); /* Consistent with output background */
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(7px);
+    box-shadow: inset 0 0 15px var(--light-shadow);
+}
+
 #history-output p, #help p, #help ul {
-    margin-bottom: 15px; /* More spacing */
-    color: var(--text-color-secondary); /* Use secondary text color */
+    margin-bottom: 15px;
+    color: var(--text-color-secondary);
 }
 
 #history-output p strong {
@@ -363,43 +408,45 @@ body {
 
 #help h2 {
     color: var(--accent-color);
-    margin-bottom: 20px;
+    margin-bottom: 25px;
     text-align: center;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+    font-size: 2rem;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.05);
 }
 
 #help h3 {
     color: var(--text-color-primary);
-    margin-top: 25px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid rgba(135, 206, 235, 0.2);
-    padding-bottom: 5px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid rgba(129, 212, 250, 0.25);
+    padding-bottom: 8px;
+    font-size: 1.4rem;
 }
 
 #help ul {
-    list-style-type: '— '; /* Custom list style */
-    padding-left: 20px;
+    list-style-type: '• '; /* Modern bullet style */
+    padding-left: 25px;
 }
 
 #help ul li {
-    margin-bottom: 8px;
-    font-size: 0.95em;
+    margin-bottom: 10px;
+    font-size: 1.05em;
 }
 
 .main-footer {
     text-align: center;
-    padding: 20px 0;
-    margin-top: 30px;
+    padding: 25px 0;
+    margin-top: 40px;
     color: var(--text-color-secondary);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     border-top: 1px solid var(--border-color);
-    background-color: var(--header-bg); /* Use header bg for consistency */
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    background-color: var(--header-bg); /* Consistent with header background */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
 }
 
 .main-footer p {
-    margin-bottom: 8px;
+    margin-bottom: 10px;
 }
 
 .main-footer a {
@@ -413,64 +460,272 @@ body {
     color: var(--accent-hover);
 }
 
-/* Responsive Adjustments */
+/* --- Login Modal Styles --- */
+.modal-overlay {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--modal-overlay-bg);
+    backdrop-filter: blur(10px); /* Heavy blur for background */
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1000; /* On top of everything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0; /* Start invisible for fade-in */
+    pointer-events: none; /* Allow clicks through when invisible */
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    background-color: var(--modal-content-bg);
+    border-radius: 25px;
+    padding: 40px;
+    position: relative;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(12px); /* Even stronger blur for modal content */
+    -webkit-backdrop-filter: blur(12px);
+    transform: translateY(-20px); /* Start slightly up for animation */
+    opacity: 0; /* Start invisible for content animation */
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.modal-overlay.active .modal-content {
+    transform: translateY(0); /* Slide into place */
+    opacity: 1;
+}
+
+.modal-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: var(--text-color-secondary);
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.modal-close-btn:hover {
+    color: var(--text-color-primary);
+    transform: rotate(90deg);
+}
+
+.modal-content h2 {
+    font-size: 2.2rem;
+    color: var(--accent-color);
+    margin-bottom: 15px;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.05);
+}
+
+.modal-content p {
+    font-size: 1.1rem;
+    color: var(--text-color-secondary);
+    margin-bottom: 30px;
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: left; /* Align form elements left */
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color-primary);
+    font-size: 1.05rem;
+}
+
+.login-form input[type="text"],
+.login-form input[type="password"] {
+    width: calc(100% - 30px); /* Adjust for padding */
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 15px; /* More rounded */
+    background-color: var(--input-bg);
+    color: var(--input-text);
+    font-size: 1.05rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: inset 0 1px 5px var(--light-shadow); /* Inner shadow for input fields */
+}
+
+.login-form input[type="text"]:focus,
+.login-form input[type="password"]:focus {
+    border-color: var(--accent-hover);
+    box-shadow: 0 0 0 4px rgba(129, 212, 250, 0.3);
+}
+
+.submit-login-btn {
+    background-color: var(--accent-color);
+    color: var(--button-text);
+    border: none;
+    border-radius: 30px;
+    padding: 15px 30px;
+    font-size: 1.15rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    margin-top: 20px;
+    width: 100%; /* Full width button */
+}
+
+.submit-login-btn:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+.forgot-password-link {
+    display: block;
+    margin-top: 15px;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.forgot-password-link:hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+}
+
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 1024px) {
+    .main-header h1 {
+        font-size: 3.2rem;
+    }
+    .main-header p {
+        font-size: 1.2rem;
+    }
+    .header-button {
+        right: 20px;
+        padding: 8px 20px;
+        font-size: 0.9rem;
+    }
+    .container {
+        max-width: 900px;
+        padding: 30px;
+    }
+    .output {
+        min-height: 300px;
+        max-height: 500px;
+        padding: 25px;
+    }
+    #commandInput {
+        min-height: 90px;
+        max-height: 200px;
+        padding: 18px;
+    }
+    .tab {
+        padding: 15px 25px;
+        font-size: 1.05rem;
+    }
+    .modal-content {
+        padding: 30px;
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         width: 95%;
         padding: 25px;
         margin: 25px auto;
     }
-
+    .main-header {
+        padding: 1.5rem 0;
+    }
+    .main-header h1 {
+        font-size: 2.8rem;
+    }
+    .main-header p {
+        font-size: 1.1rem;
+    }
+    .header-button {
+        position: static; /* Stack on smaller screens */
+        transform: none;
+        margin-top: 15px;
+        width: 80%; /* Take more width */
+        max-width: 200px; /* Limit width */
+    }
     .tabs {
-        flex-wrap: wrap; /* Allow tabs to wrap */
+        flex-wrap: wrap;
+        justify-content: center; /* Center tabs when wrapped */
         margin-bottom: 20px;
     }
-
     .tab {
         padding: 12px 20px;
         font-size: 1rem;
         margin-right: 5px;
-        margin-bottom: 5px; /* Space out wrapped tabs */
+        margin-bottom: 10px;
     }
-
     .input-controls {
         flex-direction: column;
-        gap: 12px;
+        gap: 15px;
     }
-
     #submitBtn, .stats-toggle {
         width: 100%;
-        margin-bottom: 0; /* Remove extra margin */
+        max-width: none; /* Allow full width */
+        padding: 14px 20px;
     }
-
     .stats-buttons, .symbol-buttons {
         gap: 8px;
         margin-top: 15px;
     }
-
     .stats-buttons button, .symbol-buttons button {
-        flex-grow: 1; /* Allow them to grow on small screens */
-        min-width: unset; /* Remove min-width to allow better wrapping */
+        flex-grow: 1;
+        min-width: unset;
+        padding: 10px 15px;
     }
-
-    .main-header h1 {
-        font-size: 2.8rem;
-    }
-
-    .main-header p {
-        font-size: 1.1rem;
-    }
-
     .output {
-        min-height: 200px;
-        max-height: 400px;
-        padding: 18px;
+        min-height: 250px;
+        max-height: 450px;
+        padding: 20px;
     }
-
     #commandInput {
-        min-height: 70px;
-        max-height: 150px;
+        min-height: 80px;
+        max-height: 180px;
         padding: 15px;
+    }
+    .modal-content {
+        padding: 25px;
+        max-width: 90%;
+    }
+    .modal-content h2 {
+        font-size: 1.8rem;
+    }
+    .modal-content p {
+        font-size: 1rem;
+    }
+    .login-form input {
+        padding: 12px;
+        font-size: 1rem;
+    }
+    .submit-login-btn {
+        padding: 12px 20px;
+        font-size: 1rem;
     }
 }
 
@@ -479,20 +734,35 @@ body {
         font-size: 2.2rem;
     }
     .main-header p {
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
     .container {
-        padding: 20px;
+        padding: 18px;
     }
     .tab {
         font-size: 0.9rem;
-        padding: 10px 15px;
+        padding: 10px 12px;
     }
     .output p {
         padding: 10px 15px;
+        font-size: 0.95em;
     }
-    #submitBtn, .stats-toggle, .stats-buttons button, .symbol-buttons button {
+    .MathJax {
+        font-size: 1.1em !important;
+    }
+    #commandInput {
+        min-height: 60px;
+        max-height: 120px;
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+    .submit-login-btn, .stats-toggle, .stats-buttons button, .symbol-buttons button {
         font-size: 0.9rem;
         padding: 10px 15px;
+    }
+    .modal-close-btn {
+        font-size: 1.8rem;
+        top: 10px;
+        right: 10px;
     }
 }
