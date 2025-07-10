@@ -1,24 +1,34 @@
 :root {
-    --primary-bg: #2c3e50; /* Dark Navy */
-    --secondary-bg: #34495e; /* Slightly lighter dark navy */
-    --accent-color: #FFD700; /* Bright Gold */
-    --accent-hover: #f1c40f; /* Slightly darker gold for hover */
-    --text-color-primary: #fff; /* White text on dark background */
-    --text-color-secondary: #ddd; /* Slightly lighter text */
-    --border-color: #555; /* Darker border */
-    --shadow-color: rgba(0, 0, 0, 0.3);
-    --header-bg: rgba(0, 0, 0, 0.1); /* Subtle dark overlay on primary */
-    --header-text: var(--accent-color); /* Gold header text */
-    --output-bg: #222; /* Dark output background */
-    --input-bg: #333; /* Dark input background */
-    --input-text: var(--text-color-primary);
-    --tab-active-bg: var(--accent-color);
-    --tab-active-text: var(--primary-bg);
-    --tab-inactive-bg: var(--secondary-bg);
-    --tab-inactive-text: var(--text-color-secondary);
-    --button-bg: var(--accent-color);
-    --button-text: var(--primary-bg);
-    --button-hover-bg: var(--accent-hover);
+    /* Baby Blue and Soft Palette */
+    --primary-bg: #E0F2F7; /* Very light baby blue/off-white for main background */
+    --secondary-bg: rgba(255, 255, 255, 0.8); /* White with strong transparency for main blocks */
+    --accent-color: #87CEEB; /* Sky Blue - primary accent */
+    --accent-hover: #6CB6D1; /* Slightly darker sky blue for hover */
+    --text-color-primary: #333; /* Dark gray for main text */
+    --text-color-secondary: #555; /* Medium gray for secondary text */
+    --border-color: rgba(135, 206, 235, 0.4); /* Transparent baby blue border */
+    --shadow-color: rgba(0, 0, 0, 0.1); /* Lighter, subtle shadow */
+
+    --header-bg: rgba(135, 206, 235, 0.2); /* Transparent baby blue for header */
+    --header-text: #2c3e50; /* Dark navy for header text, contrasting with blue */
+    
+    --output-bg: rgba(255, 255, 255, 0.6); /* Translucent white for output area */
+    --input-bg: rgba(255, 255, 255, 0.9); /* More opaque white for input field */
+    --input-text: #333; /* Dark text for input */
+
+    --tab-active-bg: var(--accent-color); /* Sky blue for active tab */
+    --tab-active-text: #fff; /* White text on active tab */
+    --tab-inactive-bg: rgba(255, 255, 255, 0.4); /* More transparent white for inactive tabs */
+    --tab-inactive-text: #555; /* Medium gray for inactive tab text */
+
+    --button-bg: var(--accent-color); /* Sky blue for buttons */
+    --button-text: #fff; /* White text on buttons */
+    --button-hover-bg: var(--accent-hover); /* Darker sky blue on button hover */
+    
+    --user-query-bg: rgba(135, 206, 235, 0.2); /* Light transparent blue for user queries */
+    --user-query-text: #2c3e50; /* Dark navy for user query text */
+    --smairt-response-bg: rgba(255, 255, 255, 0.7); /* More opaque white for SMAIRT responses */
+    --smairt-response-text: #333; /* Dark gray for SMAIRT response text */
 }
 
 body {
@@ -28,10 +38,10 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: var(--primary-bg);
+    background: linear-gradient(135deg, #ADD8E6 0%, #B0E0E6 50%, #E0FFFF 100%); /* Soft blue gradient */
     color: var(--text-color-primary);
     line-height: 1.6;
-    overflow-y: scroll;
+    overflow-y: auto; /* Changed to auto for better scrolling */
 }
 
 .main-header {
@@ -39,36 +49,42 @@ body {
     color: var(--header-text);
     padding: 1.5rem 0;
     text-align: center;
-    box-shadow: 0 2px 10px var(--shadow-color);
+    box-shadow: 0 2px 15px var(--shadow-color); /* Enhanced shadow */
     margin-bottom: 30px;
+    backdrop-filter: blur(5px); /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(5px); /* For Safari */
 }
 
 .main-header h1 {
     margin: 0;
-    font-size: 3rem;
+    font-size: 3.5rem; /* Slightly larger */
     font-weight: 700;
-    text-shadow: 1px 1px 2px var(--shadow-color);
+    text-shadow: 2px 2px 5px rgba(0,0,0,0.1); /* Softer text shadow */
+    color: var(--header-text); /* Ensure header text color applies */
 }
 
 .main-header p {
     margin: 10px 0 0;
-    font-size: 1.2rem;
+    font-size: 1.3rem; /* Slightly larger */
     font-weight: 300;
-    opacity: 0.8;
+    opacity: 0.9;
     color: var(--text-color-secondary);
 }
 
 .container {
     background-color: var(--secondary-bg);
-    border-radius: 15px;
-    box-shadow: 0 6px 20px var(--shadow-color);
-    padding: 30px;
+    border-radius: 20px; /* More rounded corners */
+    box-shadow: 0 10px 30px var(--shadow-color); /* Enhanced shadow */
+    padding: 35px; /* More padding */
     width: 90%;
-    max-width: 960px;
+    max-width: 1000px; /* Slightly wider */
     margin: 30px auto;
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    border: 1px solid var(--border-color); /* Subtle border */
+    backdrop-filter: blur(8px); /* Stronger frosted glass for container */
+    -webkit-backdrop-filter: blur(8px); /* For Safari */
 }
 
 .tabs {
@@ -90,10 +106,13 @@ body {
     border-top-right-radius: 10px;
     transition: background-color 0.3s ease, color 0.3s ease;
     margin-right: 8px;
+    backdrop-filter: blur(3px); /* Subtle blur for tabs */
+    -webkit-backdrop-filter: blur(3px);
 }
 
 .tab:hover {
-    background-color: #2a3a48; /* Darken of #34495e */
+    background-color: rgba(135, 206, 235, 0.1); /* Lighter hover for tabs */
+    color: var(--accent-color); /* Change text color on hover */
 }
 
 .tab.active {
@@ -101,6 +120,7 @@ body {
     color: var(--tab-active-text);
     border-bottom: 2px solid var(--tab-active-bg);
     font-weight: 700;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Shadow for active tab */
 }
 
 .tab-content {
@@ -118,10 +138,10 @@ body {
 .output {
     background-color: var(--output-bg);
     border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 20px;
-    min-height: 250px;
-    max-height: 500px;
+    border-radius: 15px; /* More rounded */
+    padding: 25px; /* More padding */
+    min-height: 300px; /* Increased min-height */
+    max-height: 550px; /* Adjusted max-height */
     overflow-y: auto;
     margin-bottom: 25px;
     word-wrap: break-word;
@@ -129,27 +149,31 @@ body {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    backdrop-filter: blur(6px); /* Frosted effect for output */
+    -webkit-backdrop-filter: blur(6px);
 }
 
 .output p {
-    margin: 8px 0;
-    padding: 10px 15px;
-    border-radius: 8px;
-    background-color: #333;
+    margin: 10px 0; /* More margin */
+    padding: 12px 18px; /* More padding */
+    border-radius: 10px; /* More rounded */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05); /* Subtle shadow for messages */
 }
 
 .output p.user-query {
-    background-color: #444;
-    color: #8fbc8f;
+    background-color: var(--user-query-bg);
+    color: var(--user-query-text);
     align-self: flex-end;
-    max-width: 80%;
+    max-width: 75%; /* Slightly narrower */
+    border: 1px solid rgba(135, 206, 235, 0.3); /* Subtle border */
 }
 
 .output p.smairt-response {
-    background-color: #282c34;
-    color: #d19a66;
+    background-color: var(--smairt-response-bg);
+    color: var(--smairt-response-text);
     align-self: flex-start;
-    max-width: 80%;
+    max-width: 75%; /* Slightly narrower */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Subtle border */
 }
 
 .MathJax_Display {
@@ -157,7 +181,7 @@ body {
 }
 
 .MathJax {
-    font-size: 1.2em !important;
+    font-size: 1.25em !important; /* Slightly larger math text */
     color: var(--text-color-primary);
 }
 
@@ -171,89 +195,195 @@ body {
 #commandInput {
     font-family: 'Source Code Pro', monospace;
     border: 1px solid var(--border-color);
-    border-radius: 10px;
-    padding: 15px;
-    font-size: 1.1rem;
+    border-radius: 15px; /* More rounded */
+    padding: 18px; /* More padding */
+    font-size: 1.15rem; /* Slightly larger text */
     resize: vertical;
-    min-height: 80px;
-    max-height: 200px;
-    width: calc(100% - 30px);
+    min-height: 90px; /* Increased min-height */
+    max-height: 220px; /* Adjusted max-height */
+    width: calc(100% - 36px); /* Adjust width for new padding */
     box-sizing: border-box;
     outline: none;
     background-color: var(--input-bg);
     color: var(--input-text);
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    backdrop-filter: blur(7px); /* Frosted effect for input */
+    -webkit-backdrop-filter: blur(7px);
 }
 
 #commandInput:focus {
     border-color: var(--accent-color);
-    box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 0 4px rgba(135, 206, 235, 0.3); /* Accentuated shadow */
 }
 
 .input-controls {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap; /* Allow wrapping for buttons */
+    justify-content: center; /* Center buttons */
     align-items: center;
-    margin-top: 20px;
+    margin-top: 25px; /* More margin */
     gap: 15px;
 }
 
-.submit-btn, .stats-toggle, .stats-buttons button {
+.input-controls .form-group {
+    width: 100%; /* Ensure form groups take full width */
+    margin-bottom: 15px; /* Space between form groups */
+}
+
+.input-controls .form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+    color: var(--text-color-secondary);
+}
+
+.input-controls .form-group input[type="text"],
+.input-controls .form-group input[type="password"] {
+    width: calc(100% - 20px); /* Adjust for padding */
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: var(--input-text);
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-controls .form-group input[type="text"]:focus,
+.input-controls .form-group input[type="password"]:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
+    outline: none;
+}
+
+
+#submitBtn, .stats-toggle, .stats-buttons button, .symbol-buttons button {
     background-color: var(--button-bg);
     color: var(--button-text);
     border: none;
-    border-radius: 10px;
-    padding: 15px 30px;
-    font-size: 1.1rem;
+    border-radius: 12px; /* More rounded buttons */
+    padding: 14px 28px; /* Adjusted padding */
+    font-size: 1.05rem; /* Slightly smaller text for better fit */
     cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     flex-grow: 1;
-    text-shadow: 1px 1px 1px var(--shadow-color);
+    text-shadow: none; /* No text shadow on light buttons */
+    font-weight: 600;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15); /* Subtle shadow for buttons */
+    min-width: fit-content; /* Ensure buttons don't shrink too much */
 }
 
-.submit-btn:hover, .stats-toggle:hover, .stats-buttons button:hover {
+#submitBtn:hover, .stats-toggle:hover, .stats-buttons button:hover, .symbol-buttons button:hover {
     background-color: var(--button-hover-bg);
-    transform: translateY(-3px);
+    transform: translateY(-2px); /* Less dramatic lift */
+    box-shadow: 0 5px 12px rgba(0,0,0,0.2); /* Enhanced shadow on hover */
 }
 
 .stats-toggle {
-    background-color: #6c757d;
+    background-color: #ADD8E6; /* Light blue for toggle */
+    color: #333; /* Dark text for toggle */
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
 }
 
 .stats-toggle:hover {
-    background-color: #5a6167; /* Darken of #6c757d */
+    background-color: #9ACFE0; /* Darker light blue on hover */
 }
 
 .stats-buttons {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-top: 20px;
+    gap: 10px; /* Smaller gap */
+    margin-top: 15px; /* Smaller margin */
     justify-content: center;
+    width: 100%; /* Ensure it takes full width */
 }
 
 .stats-buttons button {
-    background-color: #555;
+    background-color: #C1E4F0; /* Even lighter blue for stat buttons */
+    color: #333;
     flex-grow: 0;
-    min-width: 120px;
-    color: var(--text-color-primary);
+    min-width: 110px; /* Adjusted min-width */
+    padding: 12px 20px; /* Adjusted padding */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .stats-buttons button:hover {
-    background-color: #444; /* Darken of #555 */
+    background-color: #B0D7E4; /* Darken of #C1E4F0 */
+}
+
+.symbol-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px; /* Smaller gap for symbols */
+    margin-top: 20px;
+    justify-content: center;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(135, 206, 235, 0.2); /* Very light transparent border */
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.05); /* Inner shadow for depth */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+.symbol-buttons button {
+    background-color: rgba(135, 206, 235, 0.3); /* Highly transparent baby blue */
+    color: #2c3e50; /* Dark text for symbols */
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    min-width: unset; /* Remove min-width restriction */
+    box-shadow: none; /* No individual shadow for symbol buttons */
+    border-radius: 8px; /* Slightly less rounded */
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.symbol-buttons button:hover {
+    background-color: rgba(135, 206, 235, 0.6); /* More opaque on hover */
+    transform: translateY(-1px);
 }
 
 #history-output, #help {
     padding: 20px;
+    background-color: var(--output-bg); /* Use output background for consistency */
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 
 #history-output p, #help p, #help ul {
-    margin-bottom: 12px;
+    margin-bottom: 15px; /* More spacing */
+    color: var(--text-color-secondary); /* Use secondary text color */
+}
+
+#history-output p strong {
+    color: var(--text-color-primary);
+}
+
+#help h2 {
+    color: var(--accent-color);
+    margin-bottom: 20px;
+    text-align: center;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+
+#help h3 {
+    color: var(--text-color-primary);
+    margin-top: 25px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(135, 206, 235, 0.2);
+    padding-bottom: 5px;
 }
 
 #help ul {
-    list-style-type: disc;
-    padding-left: 25px;
+    list-style-type: '— '; /* Custom list style */
+    padding-left: 20px;
+}
+
+#help ul li {
+    margin-bottom: 8px;
+    font-size: 0.95em;
 }
 
 .main-footer {
@@ -263,7 +393,9 @@ body {
     color: var(--text-color-secondary);
     font-size: 0.9rem;
     border-top: 1px solid var(--border-color);
-    background-color: var(--primary-bg);
+    background-color: var(--header-bg); /* Use header bg for consistency */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
 }
 
 .main-footer p {
@@ -281,14 +413,16 @@ body {
     color: var(--accent-hover);
 }
 
+/* Responsive Adjustments */
 @media (max-width: 768px) {
     .container {
         width: 95%;
-        padding: 20px;
-        margin: 20px auto;
+        padding: 25px;
+        margin: 25px auto;
     }
 
     .tabs {
+        flex-wrap: wrap; /* Allow tabs to wrap */
         margin-bottom: 20px;
     }
 
@@ -296,15 +430,69 @@ body {
         padding: 12px 20px;
         font-size: 1rem;
         margin-right: 5px;
+        margin-bottom: 5px; /* Space out wrapped tabs */
     }
 
     .input-controls {
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
     }
 
-    .submit-btn, .stats-toggle {
+    #submitBtn, .stats-toggle {
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 0; /* Remove extra margin */
+    }
+
+    .stats-buttons, .symbol-buttons {
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .stats-buttons button, .symbol-buttons button {
+        flex-grow: 1; /* Allow them to grow on small screens */
+        min-width: unset; /* Remove min-width to allow better wrapping */
+    }
+
+    .main-header h1 {
+        font-size: 2.8rem;
+    }
+
+    .main-header p {
+        font-size: 1.1rem;
+    }
+
+    .output {
+        min-height: 200px;
+        max-height: 400px;
+        padding: 18px;
+    }
+
+    #commandInput {
+        min-height: 70px;
+        max-height: 150px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-header h1 {
+        font-size: 2.2rem;
+    }
+    .main-header p {
+        font-size: 1rem;
+    }
+    .container {
+        padding: 20px;
+    }
+    .tab {
+        font-size: 0.9rem;
+        padding: 10px 15px;
+    }
+    .output p {
+        padding: 10px 15px;
+    }
+    #submitBtn, .stats-toggle, .stats-buttons button, .symbol-buttons button {
+        font-size: 0.9rem;
+        padding: 10px 15px;
     }
 }
