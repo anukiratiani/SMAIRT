@@ -28,6 +28,7 @@
     <header class="main-header">
         <h1>SMAIRT</h1>
         <p>Smart AI Math & Inquiry Response Tool</p>
+        <button id="loginBtn" class="header-button">Login</button>
     </header>
 
     <main class="container">
@@ -39,91 +40,71 @@
 
         <div id="problem-input" class="tab-content active">
             <div class="output" id="output">
-                <p class="response">Welcome to SMAIRT! How can I help you today?</p>
+                <p class="smairt-response">Welcome to SMAIRT! How can I help you today?</p>
             </div>
             <div class="input-area">
                 <textarea id="commandInput" placeholder="Enter your math problem or query here..."></textarea>
                 <div class="input-controls">
-                    <div class="some-container">
-                        <h2>Your Form Title</h2>
-
-                        <form action="/your-submission-endpoint" method="post">
-                            <div class="form-group">
-                                <label for="username">Username:</label>
-                                <input type="text" id="username" name="username">
-                            </div>
-
-                            <div class="form-group">
-                                <label for="password">Password:</label>
-                                <input type="password" id="password" name="password">
-                            </div>
-
-                            <div class="input-controls">
-                                <button id="submitBtn" type="submit">Submit</button>
-                                <button class="stats-toggle" onclick="toggleStats()">▼ Statistical Tools</button>
-                                <div id="statsButtons" class="stats-buttons" style="display: none;">
-                                    <button onclick="calculateStat('average')">Average</button>
-                                    <button onclick="calculateStat('median')">Median</button>
-                                    <button onclick="calculateStat('mode')">Mode</button>
-                                    <button onclick="calculateStat('range')">Range</button>
-                                    </div>
-                                <div class="symbol-buttons">
-                                    <button onclick="insertSymbol('^')">^</button>
-                                    <button onclick="insertSymbol('√')">√</button>
-                                    <button onclick="insertSymbol('∫')">∫</button>
-                                    <button onclick="insertSymbol('π')">π</button>
-                                    <button onclick="insertSymbol('∑')">Σ</button>
-                                    <button onclick="insertSymbol('α')">α</button>
-                                    <button onclick="insertSymbol('β')">β</button>
-                                    <button onclick="insertSymbol('γ')">γ</button>
-                                    <button onclick="insertSymbol('Δ')">Δ</button>
-                                    <button onclick="insertSymbol('θ')">θ</button>
-                                    <button onclick="insertSymbol('λ')">λ</button>
-                                    <button onclick="insertSymbol('μ')">μ</button>
-                                    <button onclick="insertSymbol('ρ')">ρ</button>
-                                    <button onclick="insertSymbol('σ')">σ</button>
-                                    <button onclick="insertSymbol('Φ')">Φ</button>
-                                    <button onclick="insertSymbol('Ψ')">Ψ</button>
-                                    <button onclick="insertSymbol('Ω')">Ω</button>
-                                    <button onclick="insertSymbol('←')">←</button>
-                                    <button onclick="insertSymbol('↑')">↑</button>
-                                    <button onclick="insertSymbol('→')">→</button>
-                                    <button onclick="insertSymbol('↓')">↓</button>
-                                    <button onclick="insertSymbol('↔')">↔</button>
-                                    <button onclick="insertSymbol('∞')">∞</button>
-                                    <button onclick="insertSymbol('≠')">≠</button>
-                                    <button onclick="insertSymbol('≈')">≈</button>
-                                    <button onclick="insertSymbol('≡')">≡</button>
-                                    <button onclick="insertSymbol('≤')">≤</button>
-                                    <button onclick="insertSymbol('≥')">≥</button>
-                                    <button onclick="insertSymbol('∈')">∈</button>
-                                    <button onclick="insertSymbol('∉')">∉</button>
-                                    <button onclick="insertSymbol('⊆')">⊆</button>
-                                    <button onclick="insertSymbol('⊂')">⊂</button>
-                                    <button onclick="insertSymbol('∪')">∪</button>
-                                    <button onclick="insertSymbol('∩')">∩</button>
-                                    <button onclick="insertSymbol('Ø')">Ø</button>
-                                    <button onclick="insertSymbol('∀')">∀</button>
-                                    <button onclick="insertSymbol('∃')">∃</button>
-                                    <button onclick="insertSymbol('∴')">∴</button>
-                                    <button onclick="insertSymbol('∵')">∵</button>
-                                    <button onclick="insertSymbol('⇒')">⇒</button>
-                                    <button onclick="insertSymbol('⇔')">⇔</button>
-                                    <button onclick="insertSymbol('¬')">¬</button>
-                                    <button onclick="insertSymbol('∧')">∧</button>
-                                    <button onclick="insertSymbol('∨')">∨</button>
-                                    <button onclick="insertSymbol('⊕')">⊕</button>
-                                    <button onclick="insertSymbol('ℝ')">ℝ</button>
-                                    <button onclick="insertSymbol('ℂ')">ℂ</button>
-                                    <button onclick="insertSymbol('ℤ')">ℤ</button>
-                                    <button onclick="insertSymbol('ℕ')">ℕ</button>
-                                    <button onclick="insertSymbol('ℚ')">ℚ</button>
-                                </div>
-                            </div>
-
-                        </form>
-
+                    <button id="submitBtn" type="button">Submit Query</button>
+                    <button class="stats-toggle" type="button" onclick="toggleStats()">▼ Statistical Tools</button>
+                </div>
+                <div id="statsButtons" class="stats-buttons" style="display: none;">
+                    <button type="button" onclick="calculateStat('average')">Average</button>
+                    <button type="button" onclick="calculateStat('median')">Median</button>
+                    <button type="button" onclick="calculateStat('mode')">Mode</button>
+                    <button type="button" onclick="calculateStat('range')">Range</button>
                     </div>
+                <div class="symbol-buttons">
+                    <button type="button" onclick="insertSymbol('^')">^</button>
+                    <button type="button" onclick="insertSymbol('√')">√</button>
+                    <button type="button" onclick="insertSymbol('∫')">∫</button>
+                    <button type="button" onclick="insertSymbol('π')">π</button>
+                    <button type="button" onclick="insertSymbol('∑')">Σ</button>
+                    <button type="button" onclick="insertSymbol('α')">α</button>
+                    <button type="button" onclick="insertSymbol('β')">β</button>
+                    <button type="button" onclick="insertSymbol('γ')">γ</button>
+                    <button type="button" onclick="insertSymbol('Δ')">Δ</button>
+                    <button type="button" onclick="insertSymbol('θ')">θ</button>
+                    <button type="button" onclick="insertSymbol('λ')">λ</button>
+                    <button type="button" onclick="insertSymbol('μ')">μ</button>
+                    <button type="button" onclick="insertSymbol('ρ')">ρ</button>
+                    <button type="button" onclick="insertSymbol('σ')">σ</button>
+                    <button type="button" onclick="insertSymbol('Φ')">Φ</button>
+                    <button type="button" onclick="insertSymbol('Ψ')">Ψ</button>
+                    <button type="button" onclick="insertSymbol('Ω')">Ω</button>
+                    <button type="button" onclick="insertSymbol('←')">←</button>
+                    <button type="button" onclick="insertSymbol('↑')">↑</button>
+                    <button type="button" onclick="insertSymbol('→')">→</button>
+                    <button type="button" onclick="insertSymbol('↓')">↓</button>
+                    <button type="button" onclick="insertSymbol('↔')">↔</button>
+                    <button type="button" onclick="insertSymbol('∞')">∞</button>
+                    <button type="button" onclick="insertSymbol('≠')">≠</button>
+                    <button type="button" onclick="insertSymbol('≈')">≈</button>
+                    <button type="button" onclick="insertSymbol('≡')">≡</button>
+                    <button type="button" onclick="insertSymbol('≤')">≤</button>
+                    <button type="button" onclick="insertSymbol('≥')">≥</button>
+                    <button type="button" onclick="insertSymbol('∈')">∈</button>
+                    <button type="button" onclick="insertSymbol('∉')">∉</button>
+                    <button type="button" onclick="insertSymbol('⊆')">⊆</button>
+                    <button type="button" onclick="insertSymbol('⊂')">⊂</button>
+                    <button type="button" onclick="insertSymbol('∪')">∪</button>
+                    <button type="button" onclick="insertSymbol('∩')">∩</button>
+                    <button type="button" onclick="insertSymbol('Ø')">Ø</button>
+                    <button type="button" onclick="insertSymbol('∀')">∀</button>
+                    <button type="button" onclick="insertSymbol('∃')">∃</button>
+                    <button type="button" onclick="insertSymbol('∴')">∴</button>
+                    <button type="button" onclick="insertSymbol('∵')">∵</button>
+                    <button type="button" onclick="insertSymbol('⇒')">⇒</button>
+                    <button type="button" onclick="insertSymbol('⇔')">⇔</button>
+                    <button type="button" onclick="insertSymbol('¬')">¬</button>
+                    <button type="button" onclick="insertSymbol('∧')">∧</button>
+                    <button type="button" onclick="insertSymbol('∨')">∨</button>
+                    <button type="button" onclick="insertSymbol('⊕')">⊕</button>
+                    <button type="button" onclick="insertSymbol('ℝ')">ℝ</button>
+                    <button type="button" onclick="insertSymbol('ℂ')">ℂ</button>
+                    <button type="button" onclick="insertSymbol('ℤ')">ℤ</button>
+                    <button type="button" onclick="insertSymbol('ℕ')">ℕ</button>
+                    <button type="button" onclick="insertSymbol('ℚ')">ℚ</button>
                 </div>
             </div>
         </div>
@@ -214,6 +195,31 @@
             </div>
         </div>
     </main>
+
+    <footer class="main-footer">
+        <p>&copy; 2025 SMAIRT. All rights reserved.</p>
+        <p>Built with ❤️ by Your Name/Team</p>
+    </footer>
+
+    <div id="loginModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn" type="button">&times;</button>
+            <h2>Welcome Back!</h2>
+            <p>Please enter your credentials to access premium features.</p>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="submit-login-btn">Log In</button>
+                <a href="#" class="forgot-password-link">Forgot Password?</a>
+            </form>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
